@@ -1,2 +1,2 @@
-# PI2sm
+# Projeto Integrado
 
