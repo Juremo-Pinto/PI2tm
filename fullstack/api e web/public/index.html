@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Leituras</title>
+</head>
+
+<body>
+
+    <h1>Leituras</h1>
+
+    <input type="text" id="valor" placeholder="Digite uma leitura">
+    <button onclick="enviarLeitura()">Enviar</button>
+
+    <h2>Dados:</h2>
+    <pre id="dados"></pre>
+
+    <script>
+        async function enviarLeitura() {
+            const valor = document.getElementById('valor').value;
+
+            await fetch('http://localhost:3001/leituras', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    valor: valor
+                })
+            });
+
+            carregarLeituras();
+        }
+
+        async function carregarLeituras() {
+            const resposta = await fetch('http://localhost:3001/leituras');
+            const dados = await resposta.json();
+
+            document.getElementById('dados').textContent =
+                JSON.stringify(dados, null, 2);
+        }
+
+        carregarLeituras();
+    </script>
+
+</body>
+
+</html>
