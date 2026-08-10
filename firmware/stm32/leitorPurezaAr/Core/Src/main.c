@@ -26,6 +26,7 @@
 #include "usbd_cdc.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -118,13 +119,14 @@ int main(void) {
 	MX_GPIO_Init();
 	MX_USB_DEVICE_Init();
 	/* USER CODE BEGIN 2 */
-	HAL_Delay(5000);
+	HAL_Delay(10000);
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
 	while (1) {
-		bool filtroAtivo = HAL_GPIO_ReadPin(GPIOA, GPIO_Pin_10)
+		short adc = 1024;
+		bool filtroAtivo = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_10)
 				== GPIO_PIN_RESET;
 		uint16_t valor;
 
@@ -138,7 +140,7 @@ int main(void) {
 		sprintf(buffer, "%u;%u\r\n", valor, filtroAtivo ? 1 : 0);
 
 		CDC_Transmit((uint8_t*) buffer, strlen(buffer));
-		HAL_Delay(10000);
+		HAL_Delay(5000);
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */

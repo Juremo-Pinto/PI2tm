@@ -18,7 +18,7 @@ class Program
     {
         SerialPort porta = new SerialPort();
 
-        porta.PortName = "COM1";
+        porta.PortName = "COM3";
         porta.BaudRate = 115200;
         porta.NewLine = "\r\n";
 
@@ -43,6 +43,12 @@ class Program
             return null;
         }
 
+        if (partes[1] != "0" && partes[1] != "1")
+        {
+            Console.WriteLine($"Filtro inválido: {partes[1]}");
+            return null;
+        }
+
         return new Leitura
         {
             Valor = valor,
@@ -53,7 +59,12 @@ class Program
 
     static string ConverterParaJson(Leitura leitura)
     {
-        return JsonSerializer.Serialize(leitura);
+        JsonSerializerOptions opcoes = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+
+        return JsonSerializer.Serialize(leitura, opcoes);
     }
 
     static async Task<HttpResponseMessage> EnviarParaApi(
@@ -90,7 +101,7 @@ class Program
 
             string json = ConverterParaJson(leitura);
 
-            Console.WriteLine(json);
+            Console.WriteLine($"Enviando: {json}");
 
             try
             {
@@ -102,11 +113,22 @@ class Program
                 string respostaApi =
                     await resposta.Content.ReadAsStringAsync();
 
-                Console.WriteLine($"Enviado: {json}");
-                Console.WriteLine(
-                    $"API: {(int)resposta.StatusCode} {resposta.StatusCode}"
-                );
-                Console.WriteLine($"Resposta: {respostaApi}");
+                if (resposta.IsSuccessStatusCode)
+                {
+                    Console.WriteLine(
+                        $"API: {(int)resposta.StatusCode} {resposta.StatusCode}"
+                    );
+
+                    Console.WriteLine($"Resposta: {respostaApi}");
+                }
+                else
+                {
+                    Console.WriteLine(
+                        $"Erro da API: {(int)resposta.StatusCode} {resposta.StatusCode}"
+                    );
+
+                    Console.WriteLine($"Resposta: {respostaApi}");
+                }
             }
             catch (HttpRequestException erro)
             {
