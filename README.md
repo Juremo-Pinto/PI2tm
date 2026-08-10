@@ -74,12 +74,6 @@ Cada transmissão termina com `\r\n`, permitindo que a aplicação C# utilize a 
 * Utilização de um filtro compatível com a variável física.
 * Filtro implementado: média móvel.
 
-### Estado atual
-
-A aquisição de dados e a transmissão USB CDC estão implementadas.
-
-O STM32 atualmente utiliza uma variável de teste para representar a leitura do sensor:
-
 ```c
 short adc = 1024;
 ```
@@ -142,29 +136,6 @@ A aplicação foi dividida em funções para separar as responsabilidades:
 * `EnviarParaApi()` realiza a requisição HTTP.
 * `Main()` coordena o fluxo principal da aplicação.
 
-### Estado atual
-
-A comunicação entre STM32 e aplicação C# está implementada.
-
-A aplicação atualmente:
-
-* estabelece comunicação com a Porta COM;
-* realiza leitura contínua;
-* interpreta o protocolo `valor;filtro`;
-* valida o valor recebido;
-* cria objetos `Leitura`;
-* adiciona timestamp;
-* converte os dados para JSON;
-* realiza requisições HTTP para a API.
-
-A URL da API utilizada atualmente é:
-
-```text
-http://localhost:3001/leituras
-```
-
-Essa URL deverá ser ajustada conforme a implementação definitiva do servidor.
-
 ---
 
 ## 3. Inteligência Artificial
@@ -188,10 +159,6 @@ As categorias definitivas deverão ser determinadas de acordo com a grandeza fí
 * Utilização de um modelo de classificação.
 * Classificação automática de cada nova leitura.
 * Integração do modelo com a API REST.
-
-### Estado atual
-
-Ainda não implementado.
 
 ---
 
@@ -260,10 +227,6 @@ Exemplo de resposta esperada:
 * Retorno da classificação ao cliente.
 * Disponibilização dos dados para o frontend.
 
-### Estado atual
-
-Ainda não implementado.
-
 ---
 
 ## 5. Interface Web
@@ -311,10 +274,6 @@ A interface deverá ser atualizada conforme novas medições forem processadas.
 * Horário da última atualização.
 * Indicação visual do estado atual.
 * Atualização conforme novas medições são recebidas.
-
-### Estado atual
-
-Ainda não implementado.
 
 ---
 
@@ -400,7 +359,7 @@ projeto/
 │   └── stm32/
 │
 ├── comunicacao/
-│   └── csharp/
+│   └── comms/
 │
 ├── ia/
 │   └── modelo/
@@ -430,46 +389,3 @@ projeto/
 | Classificação automática     | Pendente           |
 | Interface Web                | Pendente           |
 | Histórico de leituras        | Pendente           |
-
-## Fluxo completo planejado
-
-Quando todos os componentes estiverem implementados, o funcionamento esperado será:
-
-```text
-1. Sensor gera uma leitura
-        ↓
-2. STM32 lê o valor pelo ADC
-        ↓
-3. GPIO determina se o filtro está ativo
-        ↓
-4. Média móvel é aplicada, se necessário
-        ↓
-5. STM32 envia "valor;filtro" via USB CDC
-        ↓
-6. C# recebe a mensagem pela Porta COM
-        ↓
-7. C# valida e organiza os dados
-        ↓
-8. C# converte a leitura para JSON
-        ↓
-9. C# envia POST para a API
-        ↓
-10. API recebe a leitura
-        ↓
-11. API chama o modelo de Machine Learning
-        ↓
-12. Modelo classifica a leitura
-        ↓
-13. API retorna a classificação
-        ↓
-14. Dados ficam disponíveis para o frontend
-        ↓
-15. Interface Web apresenta a leitura,
-    classificação e histórico
-```
-
-## Desenvolvimento atual
-
-Até o momento, as etapas de Aquisição de Dados e Comunicação estão em desenvolvimento e já possuem uma implementação funcional inicial.
-
-O próximo estágio consiste em finalizar a API REST, integrar o modelo de classificação e posteriormente desenvolver a interface Web.
