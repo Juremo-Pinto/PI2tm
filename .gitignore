@@ -1,0 +1,190 @@
+# Environment / Secrets
+
+.env
+.env.*
+!.env.example
+*.env.local
+*.env.production
+*.env.development
+
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+secrets/
+credentials/
+config/secrets/
+
+# Dependencies
+
+node_modules/
+vendor/
+packages/
+.nuget/
+.paket/
+
+# Build / Compilation
+
+bin/
+obj/
+build/
+dist/
+out/
+target/
+publish/
+release/
+debug/
+
+# Logs
+
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Temporary / Cache
+
+tmp/
+temp/
+.cache/
+.parcel-cache/
+.npm/
+.yarn/cache/
+.pytest_cache/
+**pycache**/
+*.py[cod]
+*.pyo
+
+# Python
+
+.venv/
+venv/
+env/
+ENV/
+*.egg-info/
+.mypy_cache/
+.ruff_cache/
+
+# C# / .NET
+
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+TestResults/
+BenchmarkDotNet.Artifacts/
+
+# Java
+
+.gradle/
+.gradle-cache/
+*.class
+*.jar
+*.war
+*.ear
+hs_err_pid*
+
+# C / C++
+
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dll
+*.dylib
+*.exe
+*.out
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
+
+# Database
+
+*.db
+*.sqlite
+*.sqlite3
+*.db-shm
+*.db-wal
+*.mdb
+
+# Generated Data
+
+uploads/
+generated-data/
+*.generated.*
+*.cache
+*.tmp
+
+# Test Coverage
+
+coverage/
+.coverage
+htmlcov/
+*.lcov
+.nyc_output/
+
+# Docker
+
+.docker/
+docker-compose.override.yml
+*.tar
+
+# IDEs
+
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Operating System
+
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+
+.DS_Store
+.AppleDouble
+.LSOverride
+
+*~
+.directory
+
+# HTTP / API temporary files
+
+.http/
+.rest/
+requests/
+*.http.bak
+
+# Local server files
+
+server.local.*
+local-server.*
+*.local.json
+
+# AI / ML
+
+checkpoints/
+*.pt
+*.pth
+*.safetensors
+
+# Crash / Debug
+
+crash-reports/
+*.dmp
+*.stackdump
+core.*
+
+# Generated documentation
+
+docs/_build/
+site/
