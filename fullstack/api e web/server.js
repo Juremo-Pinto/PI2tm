@@ -7,6 +7,25 @@ const app = express();
 app.use(express.json());
 
 const DADOS_PATH = path.join(__dirname, 'data', 'dados.json');
+const BARF_PATH = path.join(__dirname, 'braf', 'barf.json')
+
+app.get('/leituras', (req, res) => {
+    res.sendFile(
+        path.join(__dirname, 'public', 'leituras.html')
+    );
+});
+
+app.get('/api/leituras', (req, res) => {
+    if (!fs.existsSync(DADOS_PATH)) {
+        return res.json([]);
+    }
+
+    const dados = JSON.parse(
+        fs.readFileSync(DADOS_PATH, 'utf-8')
+    );
+
+    res.json(dados);
+});
 
 function lerDados() {
     if (!fs.existsSync(DADOS_PATH)) {
@@ -16,15 +35,23 @@ function lerDados() {
     return JSON.parse(fs.readFileSync(DADOS_PATH, 'utf-8'));
 }
 
-function salvarDados(dados) {
+function lerBarf() {
+    if (!fs.existsSync(BARF_PATH)) {
+        return [];
+    }
+
+    return JSON.parse(fs.readFileSync(BARF_PATH, 'utf-8'));
+}
+
+function salvarBarf(barf) {
     fs.writeFileSync(
-        DADOS_PATH,
-        JSON.stringify(dados, null, 2)
+        BARF_PATH,
+        JSON.stringify(barf, null, 2)
     );
 }
 
 async function enviarParaIA(valor) {
-    const resposta = await fetch('http://localhost:5000/prever', {
+    const resposta = await fetch('http://localhost:5000/preview', {
         method: 'POST',
 
         headers: {
@@ -49,18 +76,26 @@ app.post('/leituras', async (req, res) => {
 
     const leitura = req.body;
 
-    const dados = lerDados();
-
-    dados.push(leitura);
-
-    salvarDados(dados);
-
     try {
 
         // Envia toda leitura para a IA
         const resultadoIA = await enviarParaIA(
             leitura.valor
         );
+
+        const registro = {
+            ia: {
+                classe: resultadoIA.classe,
+                resultado: resultadoIA.resultado
+            }
+        };
+
+        const barf = lerBarf();
+
+        barf.push(registro);
+
+        salvarBarf(barf);
+
 
         return res.status(201).json({
             leitura: leitura,
@@ -80,12 +115,6 @@ app.post('/leituras', async (req, res) => {
             erro: 'Não foi possível consultar a IA'
         });
     }
-});
-
-app.get('/leituras', (req, res) => {
-    const dados = lerDados();
-
-    res.json(dados);
 });
 
 const PORT = process.env.PORT || 3001;
