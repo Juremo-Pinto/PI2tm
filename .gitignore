@@ -188,3 +188,4 @@ core.*
 
 docs/_build/
 site/
+*dados.json

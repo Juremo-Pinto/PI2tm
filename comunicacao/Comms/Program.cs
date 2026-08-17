@@ -18,7 +18,7 @@ class Program
     {
         SerialPort porta = new SerialPort();
 
-        porta.PortName = "COM3";
+        porta.PortName = "COM5";
         porta.BaudRate = 115200;
         porta.NewLine = "\r\n";
 
