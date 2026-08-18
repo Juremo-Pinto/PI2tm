@@ -9,6 +9,7 @@ O projeto utiliza um potenciômetro/trimpot como representação de um sensor de
 A leitura é realizada por um microcontrolador STM32, transmitida ao computador através de USB CDC, processada por uma aplicação em C#, enviada para uma API REST em Node.js e posteriormente classificada por um modelo de Machine Learning executado através de uma API em Python.
 
 A aplicação web apresenta as leituras, estatísticas, evolução das medições e classificação atual do ambiente.
+
 **Video de Funcionamento:** [LINK]
 
 ---
