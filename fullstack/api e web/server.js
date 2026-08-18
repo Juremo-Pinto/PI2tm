@@ -35,6 +35,13 @@ function lerDados() {
     return JSON.parse(fs.readFileSync(DADOS_PATH, 'utf-8'));
 }
 
+function salvarDados(dados) {
+    fs.writeFileSync(
+        DADOS_PATH,
+        JSON.stringify(dados, null, 2)
+    );
+}
+
 function lerBarf() {
     if (!fs.existsSync(BARF_PATH)) {
         return [];
@@ -70,9 +77,19 @@ async function enviarParaIA(valor) {
     return await resposta.json();
 }
 
+app.get('/api/barf', (req, res) => {
+    res.json(lerBarf());
+});
+
 app.post('/leituras', async (req, res) => {
 
     const leitura = req.body;
+
+    const dados = lerDados();
+
+    dados.push(leitura);
+
+    salvarDados(dados);
 
     try {
 
