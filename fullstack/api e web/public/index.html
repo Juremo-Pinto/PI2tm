@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Monitoramento de Partículas</title>
+    <title>Central CRMS - Monitoramento</title>
 
     <style>
         * {
@@ -14,583 +14,387 @@
             padding: 0;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: Arial, Helvetica, sans-serif;
-            background: #0f1117;
-            color: #f1f1f1;
-            padding: 25px;
+            background: #e9e9e9;
+            color: #333;
+            font-size: 13px;
         }
 
-        .container {
+        .pagina {
+            width: 96%;
             max-width: 1150px;
-            margin: auto;
+            margin: 20px auto;
+            background: #fff;
+            border: 1px solid #b7b7b7;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
         }
 
-        header {
-            margin-bottom: 25px;
+        .topo {
+            background: #1f4f7a;
+            border-bottom: 4px solid #163b5c;
+            color: #fff;
+            padding: 14px 18px;
         }
 
-        header h1 {
-            font-size: 28px;
+        .topo h1 {
+            font-size: 21px;
+            font-weight: normal;
             margin-bottom: 5px;
         }
 
-        header p {
-            color: #858b99;
+        .topo p {
+            font-size: 12px;
+            color: #d7e5f0;
         }
 
-
-        /* =========================
-           CARDS
-        ========================= */
-
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 15px;
+        .menu {
+            height: 34px;
+            background: #f3f3f3;
+            border-bottom: 1px solid #c6c6c6;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
         }
 
-        .card {
-            background: #191c24;
-            border: 1px solid #292d38;
-            border-radius: 10px;
-            padding: 18px;
+        .menu a {
+            display: block;
+            height: 34px;
+            line-height: 34px;
+            padding: 0 14px;
+            border-left: 1px solid #d5d5d5;
+            color: #444;
+            font-size: 12px;
+            text-decoration: none;
         }
 
-        .card-title {
-            color: #858b99;
-            font-size: 13px;
-            margin-bottom: 8px;
+        .menu a:hover {
+            background: #e8e8e8;
+            color: #1f4f7a;
         }
 
-        .card-value {
-            font-size: 30px;
+        .menu a.ativo {
+            background: #fff;
+            color: #1f4f7a;
+            font-weight: bold;
+            border-top: 3px solid #1f4f7a;
+            line-height: 31px;
+        }
+
+        .conteudo {
+            padding: 15px;
+        }
+
+        .titulo-secao {
+            font-size: 16px;
+            color: #1f4f7a;
+            font-weight: normal;
+            border-bottom: 1px solid #cfcfcf;
+            padding-bottom: 7px;
+            margin-bottom: 12px;
+        }
+
+        .informacao {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 14px;
+        }
+
+        .informacao td {
+            border: 1px solid #c9c9c9;
+            padding: 9px 10px;
+        }
+
+        .informacao .rotulo {
+            width: 25%;
+            background: #f2f2f2;
+            color: #555;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .informacao .valor {
+            width: 25%;
+            background: #fff;
+            font-size: 18px;
+            color: #222;
             font-weight: bold;
         }
 
-        .card-subtitle {
-            color: #858b99;
-            font-size: 12px;
-            margin-top: 5px;
+        .informacao .maximo {
+            color: #a43d3d;
         }
 
-        .valor-max {
-            color: #ff6875;
+        .informacao .minimo {
+            color: #36794b;
         }
 
-        .valor-min {
-            color: #48e08a;
+        .painel {
+            border: 1px solid #bdbdbd;
+            margin-bottom: 14px;
+            background: #fff;
+            scroll-margin-top: 50px;
         }
 
+        .painel-titulo {
+            min-height: 34px;
+            line-height: 34px;
+            padding: 0 10px;
+            background: linear-gradient(#f8f8f8, #e7e7e7);
+            border-bottom: 1px solid #c3c3c3;
+            color: #333;
+            font-size: 13px;
+            font-weight: bold;
+        }
 
-        /* =========================
-           IA
-        ========================= */
+        .painel-conteudo {
+            padding: 10px;
+        }
 
-        .ia-card {
-            margin-bottom: 10px;
+        .status-area {
+            display: table;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .status-coluna {
+            display: table-cell;
+            vertical-align: middle;
+            padding: 4px 10px;
+            border-right: 1px solid #ddd;
+        }
+
+        .status-coluna:first-child {
+            width: 25%;
+        }
+
+        .status-coluna:last-child {
+            border-right: 0;
+        }
+
+        .status-label {
+            color: #777;
+            font-size: 11px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
         }
 
         .status {
             display: inline-block;
-
-            padding: 6px 10px;
-
-            border-radius: 15px;
-
+            padding: 5px 12px;
+            border: 1px solid #aaa;
             font-size: 12px;
             font-weight: bold;
+            background: #eee;
         }
 
         .status.aprovado {
-            background: #123d2a;
-            color: #48e08a;
+            color: #236333;
+            background: #dfeee1;
+            border-color: #8eb497;
         }
 
         .status.atencao {
-            background: #443914;
-            color: #f2cf4a;
+            color: #735e00;
+            background: #fff5c7;
+            border-color: #c9b861;
         }
 
         .status.reprovado {
-            background: #481b20;
-            color: #ff6875;
+            color: #842525;
+            background: #f5dddd;
+            border-color: #c78d8d;
         }
 
         .status.desconhecido {
-            background: #292d38;
-            color: #9297a5;
+            color: #666;
+            background: #ededed;
+            border-color: #bcbcbc;
         }
 
-
-        /* =========================
-           FILTRO
-        ========================= */
-
-        .filtro-status {
-            display: flex;
-
-            align-items: center;
-
-            gap: 8px;
-
-            margin: 10px 0 20px;
-
-            color: #858b99;
-
-            font-size: 13px;
+        .filtro {
+            font-size: 12px;
+            color: #555;
         }
 
-        .filtro-bolinha {
+        .filtro-indicador {
+            display: inline-block;
             width: 9px;
             height: 9px;
-
-            border-radius: 50%;
-
-            background: #666;
+            background: #888;
+            border: 1px solid #666;
+            margin-right: 5px;
+            vertical-align: middle;
         }
 
-        .filtro-bolinha.ativo {
-            background: #4bd98b;
+        .filtro-indicador.ativo {
+            background: #4e9b61;
+            border-color: #397348;
         }
 
-
-        /* =========================
-           GRÁFICO
-        ========================= */
-
-        .grafico-container {
-
-            background: #191c24;
-
-            border: 1px solid #292d38;
-
-            border-radius: 10px;
-
-            padding: 20px;
-
-            margin-bottom: 20px;
-        }
-
-        .grafico-header {
-
+        .grafico-cabecalho {
             display: flex;
-
             justify-content: space-between;
-
             align-items: center;
-
-            margin-bottom: 15px;
-
-            gap: 20px;
         }
-
-        .grafico-header h2 {
-            font-size: 17px;
-        }
-
-
-        /* =========================
-           VARIAÇÃO
-        ========================= */
 
         .variacao {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 7px;
-
-            font-size: 14px;
-
+            border: 1px solid #c3c3c3;
+            background: #f4f4f4;
+            padding: 4px 8px;
+            font-size: 11px;
             font-weight: bold;
-
-            padding: 7px 11px;
-
-            border-radius: 8px;
-
-            background: #242731;
+            line-height: normal;
         }
 
         .variacao.subiu {
-            color: #48e08a;
+            color: #39754b;
         }
 
         .variacao.caiu {
-            color: #ff6875;
+            color: #a13f3f;
         }
 
         .variacao.igual {
-            color: #9297a5;
+            color: #666;
         }
-
-        .variacao-seta {
-            font-size: 16px;
-        }
-
 
         .grafico {
-
-            position: relative;
-
             width: 100%;
-
             height: 350px;
         }
 
         canvas {
-
             width: 100%;
-
             height: 100%;
         }
 
-
-        /* =========================
-           HISTÓRICO
-        ========================= */
-
-        details {
-
-            background: #191c24;
-
-            border: 1px solid #292d38;
-
-            border-radius: 10px;
-
-            overflow: hidden;
-        }
-
-        summary {
-
-            cursor: pointer;
-
-            padding: 17px 20px;
-
-            font-size: 16px;
-
-            font-weight: bold;
-
-            user-select: none;
-        }
-
-        summary:hover {
-
-            background: #1e222c;
-        }
-
-        .historico {
-
+        .tabela-container {
             max-height: 400px;
-
             overflow-y: auto;
-
-            border-top: 1px solid #292d38;
         }
 
-        table {
-
+        table.historico {
             width: 100%;
-
             border-collapse: collapse;
         }
 
-        th {
-
+        table.historico th {
             position: sticky;
-
             top: 0;
-
-            background: #191c24;
-
-            color: #858b99;
-
-            font-size: 12px;
-
+            background: #e7e7e7;
+            border: 1px solid #c5c5c5;
+            color: #444;
+            font-size: 11px;
             text-align: left;
-
-            padding: 12px;
-
-            border-bottom: 1px solid #292d38;
+            padding: 8px;
         }
 
-        td {
-
-            padding: 12px;
-
-            border-bottom: 1px solid #242731;
-
-            font-size: 14px;
+        table.historico td {
+            border: 1px solid #d2d2d2;
+            padding: 7px 8px;
+            font-size: 12px;
         }
 
-        tr:hover {
+        table.historico tbody tr:nth-child(even) {
+            background: #f7f7f7;
+        }
 
-            background: #1e222c;
+        table.historico tbody tr:hover {
+            background: #eef4f8;
         }
 
         .vazio {
-
             text-align: center;
-
-            color: #858b99;
-
-            padding: 25px;
+            color: #777;
+            padding: 20px !important;
         }
 
-
-        /* =========================
-           SCROLLBAR
-        ========================= */
-
-        .historico::-webkit-scrollbar {
-
-            width: 8px;
+        .rodape {
+            border-top: 1px solid #c5c5c5;
+            background: #f1f1f1;
+            padding: 10px 15px;
+            color: #777;
+            font-size: 10px;
+            text-align: left;
         }
-
-        .historico::-webkit-scrollbar-track {
-
-            background: #11141a;
-        }
-
-        .historico::-webkit-scrollbar-thumb {
-
-            background: #3a3f4b;
-
-            border-radius: 10px;
-        }
-
-
-        /* =========================
-           ATUALIZAÇÃO
-        ========================= */
 
         .atualizacao {
-
-            color: #666d7a;
-
-            font-size: 11px;
-
-            margin-top: 12px;
+            float: right;
         }
 
-
-        /* =========================
-           RESPONSIVO
-        ========================= */
-
-        @media (max-width: 900px) {
-
-            .cards {
-
-                grid-template-columns:
-                    repeat(2, 1fr);
-            }
-
+        .clear {
+            clear: both;
         }
-
-        @media (max-width: 600px) {
-
-            body {
-
-                padding: 15px;
-            }
-
-            .cards {
-
-                grid-template-columns: 1fr;
-            }
-
-            .grafico-header {
-
-                flex-direction: column;
-
-                align-items: flex-start;
-            }
-
-            header h1 {
-
-                font-size: 24px;
-            }
-
-            .grafico {
-
-                height: 280px;
-            }
-
-            th,
-            td {
-
-                padding: 9px;
-            }
-
-        }
-
-        /* =========================
-   MODO CRÍTICO
-========================= */
 
         .alerta-critico {
             position: fixed;
-
             inset: 0;
-
             z-index: 9999;
-
             display: none;
-
             align-items: center;
             justify-content: center;
-
             pointer-events: none;
-
-            background: rgba(255, 0, 0, 0.08);
+            background: rgba(120, 0, 0, 0.12);
         }
-
-
-        /*
- * Quando o modo crítico está ativo,
- * a página inteira começa a piscar.
- */
-
-        body.estado-critico {
-            animation:
-                piscarTela 0.8s infinite;
-        }
-
-
-        /*
- * Borda vermelha ao redor da tela.
- */
-
-        body.estado-critico::before {
-
-            content: "";
-
-            position: fixed;
-
-            inset: 0;
-
-            z-index: 9998;
-
-            pointer-events: none;
-
-            border: 10px solid red;
-
-            animation:
-                piscarBorda 0.8s infinite;
-        }
-
-
-        /*
- * O alerta fica visível apenas
- * durante o estado crítico.
- */
 
         body.estado-critico .alerta-critico {
-
             display: flex;
-
         }
 
-
-        /*
- * Exclamação gigante.
- */
+        body.estado-critico::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: 9998;
+            pointer-events: none;
+            border: 7px solid #b00000;
+            animation: piscarBorda 0.8s infinite;
+        }
 
         .exclamacao {
-
-            font-family:
-                Arial,
-                Helvetica,
-                sans-serif;
-
-            font-size:
-                min(50vw, 500px);
-
-            font-weight:
-                900;
-
-            line-height:
-                0.8;
-
-            color:
-                red;
-
-            text-shadow:
-                0 0 20px red,
-                0 0 50px red,
-                0 0 100px red;
-
-            animation:
-                fadeExclamacao 0.8s ease-in-out infinite;
-
+            width: 120px;
+            height: 120px;
+            background: #f2dada;
+            border: 6px solid #a80000;
+            color: #a80000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 90px;
+            font-weight: bold;
+            animation: piscarAlerta 0.8s infinite;
         }
 
-
-        /*
-        * Fade in / fade out do !
-        */
-
-        @keyframes fadeExclamacao {
-
-            0% {
-                opacity: 0.15;
-
-                transform:
-                    scale(0.85);
-            }
-
-            50% {
-                opacity: 1;
-
-                transform:
-                    scale(1.05);
-            }
-
-            100% {
-                opacity: 0.15;
-
-                transform:
-                    scale(0.85);
-            }
-
+        .topo-conteudo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
         }
 
-
-        /*
-        * Pisca o fundo da página.
-        */
-
-        @keyframes piscarTela {
-
-            0% {
-                background-color:
-                    #0f1117;
-            }
-
-            50% {
-                background-color:
-                    #26080b;
-            }
-
-            100% {
-                background-color:
-                    #0f1117;
-            }
-
+        .usuario {
+            font-size: 11px;
+            color: #d7e5f0;
+            white-space: nowrap;
+            padding: 6px 9px;
+            border: 1px solid #5b7f9e;
+            background: #1b456a;
         }
 
-
-        /*
-        * Pisca a borda.
-        */
+        .usuario strong {
+            color: #fff;
+            font-weight: bold;
+        }
 
         @keyframes piscarBorda {
-
             0% {
-                opacity: 0.2;
+                opacity: 0.25;
             }
 
             50% {
@@ -598,356 +402,418 @@
             }
 
             100% {
-                opacity: 0.2;
+                opacity: 0.25;
+            }
+        }
+
+        @keyframes piscarAlerta {
+            0% {
+                opacity: 0.35;
             }
 
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.35;
+            }
+        }
+
+        @media (max-width: 800px) {
+            .pagina {
+                width: 100%;
+                margin: 0;
+            }
+
+            body {
+                padding: 0;
+            }
+
+            .informacao {
+                display: block;
+            }
+
+            .informacao tbody,
+            .informacao tr,
+            .informacao td {
+                display: block;
+                width: 100%;
+            }
+
+            .informacao .rotulo {
+                padding-bottom: 4px;
+            }
+
+            .informacao .valor {
+                padding-top: 4px;
+            }
+
+            .status-area {
+                display: block;
+            }
+
+            .status-coluna {
+                display: block;
+                border-right: 0;
+                border-bottom: 1px solid #ddd;
+                padding: 10px;
+            }
+
+            .status-coluna:last-child {
+                border-bottom: 0;
+            }
+
+            .grafico-cabecalho {
+                display: block;
+            }
+
+            .variacao {
+                display: inline-block;
+                margin-top: 8px;
+            }
+
+            .menu {
+                overflow-x: auto;
+            }
+
+            .atualizacao {
+                float: none;
+                margin-top: 5px;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .conteudo {
+                padding: 10px;
+            }
+
+            .topo h1 {
+                font-size: 18px;
+            }
+
+            .grafico {
+                height: 280px;
+            }
+
+            table.historico {
+                min-width: 650px;
+            }
+
+            .tabela-container {
+                overflow-x: auto;
+            }
         }
     </style>
-
 </head>
-
 
 <body>
 
-    <div class="container">
+    <div class="pagina">
 
+        <header class="topo">
 
-        <!-- =========================
-         CABEÇALHO
-    ========================== -->
+    <div class="topo-conteudo">
 
-        <header>
-
-            <h1>
-                Monitoramento de Partículas
-            </h1>
-
-            <p>
-                Leituras do dispositivo
-            </p>
-
-        </header>
-
-
-        <!-- =========================
-         CARDS
-    ========================== -->
-
-        <div class="cards">
-
-
-            <div class="card">
-
-                <div class="card-title">
-                    Última leitura
-                </div>
-
-                <div class="card-value" id="ultimaLeitura">
-                    --
-                </div>
-
-                <div class="card-subtitle">
-                    partículas/unidade
-                </div>
-
-            </div>
-
-
-            <div class="card">
-
-                <div class="card-title">
-                    Média geral
-                </div>
-
-                <div class="card-value" id="mediaGeral">
-                    --
-                </div>
-
-                <div class="card-subtitle">
-                    todas as leituras
-                </div>
-
-            </div>
-
-
-            <div class="card">
-
-                <div class="card-title">
-                    Maior valor
-                </div>
-
-                <div class="card-value valor-max" id="maiorValor">
-                    --
-                </div>
-
-                <div class="card-subtitle">
-                    máximo registrado
-                </div>
-
-            </div>
-
-
-            <div class="card">
-
-                <div class="card-title">
-                    Menor valor
-                </div>
-
-                <div class="card-value valor-min" id="menorValor">
-                    --
-                </div>
-
-                <div class="card-subtitle">
-                    mínimo registrado
-                </div>
-
-            </div>
-
+        <div>
+            <h1>Central CRMS - Monitoramento</h1>
+            <p>Monitoramento da qualidade do ar em ambiente controlado</p>
         </div>
 
-
-        <!-- =========================
-         IA
-    ========================== -->
-
-        <div class="card ia-card">
-
-            <div class="card-title">
-                Classificação da IA
-            </div>
-
-            <div id="classificacao">
-
-                <span class="status desconhecido">
-                    Aguardando...
-                </span>
-
-            </div>
-
-            <div class="card-subtitle" id="classeNumero">
-                Classe: --
-            </div>
-
+        <div class="usuario">
+            Logado como: <strong>Supervisor</strong>
         </div>
 
+    </div>
 
-        <!-- =========================
-         FILTRO
-    ========================== -->
+</header>
 
-        <div class="filtro-status">
+        <nav class="menu">
+            <a href="#monitoramento" class="ativo">Monitoramento</a>
+            <a href="#classificacao">Classificação</a>
+            <a href="#leituras">Leituras</a>
+            <a href="#historico">Histórico</a>
+        </nav>
 
-            <div id="filtroBolinha" class="filtro-bolinha"></div>
+        <main class="conteudo">
 
-            <span id="filtroTexto">
-                Filtro: --
-            </span>
+            <section id="monitoramento">
 
-        </div>
-
-
-        <!-- =========================
-         GRÁFICO
-    ========================== -->
-
-        <div class="grafico-container">
-
-            <div class="grafico-header">
-
-                <h2>
-                    Evolução das medidas
+                <h2 class="titulo-secao">
+                    Situação atual
                 </h2>
 
+                <table class="informacao">
 
-                <div id="variacao" class="variacao igual">
-
-                    <span id="variacaoSeta" class="variacao-seta">
-                        —
-                    </span>
-
-                    <span id="variacaoTexto">
-                        0,00%
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <div class="grafico">
-
-                <canvas id="graficoLeituras"></canvas>
-
-            </div>
-
-        </div>
-
-
-        <!-- =========================
-         HISTÓRICO
-    ========================== -->
-
-        <details>
-
-            <summary>
-                Histórico de leituras
-            </summary>
-
-            <div class="historico">
-
-                <table>
-
-                    <thead>
+                    <tbody>
 
                         <tr>
-
-                            <th>#</th>
-
-                            <th>Valor</th>
-
-                            <th>Filtro</th>
-
-                            <th>Data/Hora</th>
-
-                            <th>IA</th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody id="tabelaLeituras">
-
-                        <tr>
-
-                            <td colspan="5" class="vazio">
-                                Carregando...
+                            <td class="rotulo">
+                                Última leitura
                             </td>
 
+                            <td class="valor" id="ultimaLeitura">
+                                --
+                            </td>
+
+                            <td class="rotulo">
+                                Média geral
+                            </td>
+
+                            <td class="valor" id="mediaGeral">
+                                --
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="rotulo">
+                                Maior valor
+                            </td>
+
+                            <td class="valor maximo" id="maiorValor">
+                                --
+                            </td>
+
+                            <td class="rotulo">
+                                Menor valor
+                            </td>
+
+                            <td class="valor minimo" id="menorValor">
+                                --
+                            </td>
                         </tr>
 
                     </tbody>
 
                 </table>
 
-            </div>
+            </section>
 
-        </details>
+            <section
+                id="classificacao"
+                class="painel">
 
+                <div class="painel-titulo">
+                    Classificação e situação do sistema
+                </div>
 
-        <div class="atualizacao" id="ultimaAtualizacao">
-            Última atualização: --
-        </div>
+                <div class="painel-conteudo">
 
-        <!-- =========================
-        ALERTA CRÍTICO
-        ========================== -->
+                    <div class="status-area">
 
-        <div id="alertaCritico" class="alerta-critico">
+                        <div class="status-coluna">
 
-            <div class="exclamacao">
-                !
-            </div>
+                            <div class="status-label">
+                                Classificação da IA
+                            </div>
 
-        </div>
+                            <div id="classificacaoValor">
+                                <span class="status desconhecido">
+                                    Aguardando...
+                                </span>
+                            </div>
 
+                        </div>
+
+                        <div class="status-coluna">
+
+                            <div class="status-label">
+                                Classe
+                            </div>
+
+                            <div id="classeNumero">
+                                Classe: --
+                            </div>
+
+                        </div>
+
+                        <div class="status-coluna">
+
+                            <div class="status-label">
+                                Sistema de filtragem
+                            </div>
+
+                            <div class="filtro">
+
+                                <span
+                                    id="filtroBolinha"
+                                    class="filtro-indicador">
+                                </span>
+
+                                <span id="filtroTexto">
+                                    Filtro: --
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section
+                id="leituras"
+                class="painel">
+
+                <div class="painel-titulo grafico-cabecalho">
+
+                    <span>
+                        Evolução das medidas
+                    </span>
+
+                    <div
+                        id="variacao"
+                        class="variacao igual">
+
+                        <span id="variacaoSeta">
+                            —
+                        </span>
+
+                        <span id="variacaoTexto">
+                            0,00%
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="painel-conteudo">
+
+                    <div class="grafico">
+                        <canvas id="graficoLeituras"></canvas>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section
+                id="historico"
+                class="painel">
+
+                <div class="painel-titulo">
+                    Histórico de leituras
+                </div>
+
+                <div class="tabela-container">
+
+                    <table class="historico">
+
+                        <thead>
+
+                            <tr>
+                                <th>#</th>
+                                <th>Valor</th>
+                                <th>Filtro</th>
+                                <th>Data/Hora</th>
+                                <th>Classificação IA</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="tabelaLeituras">
+
+                            <tr>
+                                <td
+                                    colspan="5"
+                                    class="vazio">
+                                    Carregando...
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </main>
+
+        <footer class="rodape">
+
+            CRMS Systems - Sistema de Monitoramento de Partículas
+
+            <span
+                class="atualizacao"
+                id="ultimaAtualizacao">
+                Última atualização: --
+            </span>
+
+            <div class="clear"></div>
+
+        </footer>
 
     </div>
 
+    <div
+        id="alertaCritico"
+        class="alerta-critico">
+
+        <div class="exclamacao">
+            !
+        </div>
+
+    </div>
 
     <script>
-
         let leituras = [];
-
         let barf = [];
 
-
-        // =====================================
-        // CARREGAR LEITURAS
-        // =====================================
-
         async function carregarLeituras() {
-
             try {
-
                 const resposta =
                     await fetch('/api/leituras');
 
-
                 if (!resposta.ok) {
-
                     throw new Error(
                         `HTTP ${resposta.status}`
                     );
-
                 }
-
 
                 leituras =
                     await resposta.json();
 
-
                 atualizarInterface();
 
-
             } catch (erro) {
-
                 console.error(
                     'Erro ao carregar leituras:',
                     erro
                 );
-
             }
-
         }
 
-
-        // =====================================
-        // CARREGAR IA
-        // =====================================
-
         async function carregarBarf() {
-
             try {
-
                 const resposta =
                     await fetch('/api/barf');
-
 
                 if (!resposta.ok) {
                     return;
                 }
 
-
                 barf =
                     await resposta.json();
 
-
                 atualizarIA();
 
-
             } catch (erro) {
-
                 console.error(
                     'Erro ao carregar IA:',
                     erro
                 );
-
             }
-
         }
 
-
-        // =====================================
-        // MÉDIA GERAL
-        // =====================================
-
         function calcularMediaGeral() {
-
             if (leituras.length === 0) {
                 return null;
             }
-
 
             const soma =
                 leituras.reduce(
@@ -957,22 +823,13 @@
                     0
                 );
 
-
             return soma / leituras.length;
-
         }
 
-
-        // =====================================
-        // MÁXIMO
-        // =====================================
-
         function calcularMaiorValor() {
-
             if (leituras.length === 0) {
                 return null;
             }
-
 
             return Math.max(
                 ...leituras.map(
@@ -980,20 +837,12 @@
                         Number(leitura.valor)
                 )
             );
-
         }
 
-
-        // =====================================
-        // MÍNIMO
-        // =====================================
-
         function calcularMenorValor() {
-
             if (leituras.length === 0) {
                 return null;
             }
-
 
             return Math.min(
                 ...leituras.map(
@@ -1001,25 +850,15 @@
                         Number(leitura.valor)
                 )
             );
-
         }
 
-
-        // =====================================
-        // VARIAÇÃO PERCENTUAL
-        // =====================================
-
         function calcularVariacao() {
-
             if (leituras.length < 2) {
-
                 return {
                     valor: 0,
                     tipo: 'igual'
                 };
-
             }
-
 
             const anterior =
                 Number(
@@ -1028,7 +867,6 @@
                     ].valor
                 );
 
-
             const atual =
                 Number(
                     leituras[
@@ -1036,21 +874,12 @@
                     ].valor
                 );
 
-
-            /*
-             * Não é possível calcular
-             * porcentagem partindo de zero.
-             */
-
             if (anterior === 0) {
-
                 return {
                     valor: 0,
                     tipo: 'igual'
                 };
-
             }
-
 
             const variacao =
                 (
@@ -1058,158 +887,118 @@
                     anterior
                 ) * 100;
 
-
             if (variacao > 0) {
-
                 return {
                     valor: variacao,
                     tipo: 'subiu'
                 };
-
             }
 
-
             if (variacao < 0) {
-
                 return {
                     valor: variacao,
                     tipo: 'caiu'
                 };
-
             }
-
 
             return {
                 valor: 0,
                 tipo: 'igual'
             };
-
         }
 
-
-        // =====================================
-        // MOSTRAR VARIAÇÃO
-        // =====================================
-
         function atualizarVariacao() {
-
             const variacao =
                 calcularVariacao();
-
 
             const elemento =
                 document.getElementById(
                     'variacao'
                 );
 
-
             const seta =
                 document.getElementById(
                     'variacaoSeta'
                 );
-
 
             const texto =
                 document.getElementById(
                     'variacaoTexto'
                 );
 
-
             elemento.className =
                 `variacao ${variacao.tipo}`;
 
-
-            if (variacao.tipo === 'subiu') {
-
+            if (
+                variacao.tipo ===
+                'subiu'
+            ) {
                 seta.textContent = '▲';
 
                 texto.textContent =
                     '+' +
-                    variacao.valor.toFixed(2)
+                    variacao.valor
+                        .toFixed(2)
                         .replace('.', ',') +
                     '%';
 
-            }
-
-            else if (variacao.tipo === 'caiu') {
-
+            } else if (
+                variacao.tipo ===
+                'caiu'
+            ) {
                 seta.textContent = '▼';
 
                 texto.textContent =
-                    variacao.valor.toFixed(2)
+                    variacao.valor
+                        .toFixed(2)
                         .replace('.', ',') +
                     '%';
 
-            }
-
-            else {
-
+            } else {
                 seta.textContent = '—';
 
                 texto.textContent =
                     '0,00%';
-
             }
-
         }
 
-
-        // =====================================
-        // ATUALIZAR INTERFACE
-        // =====================================
-
         function atualizarInterface() {
-
             if (leituras.length === 0) {
 
                 document.getElementById(
                     'ultimaLeitura'
                 ).textContent = '--';
 
-
                 document.getElementById(
                     'mediaGeral'
                 ).textContent = '--';
-
 
                 document.getElementById(
                     'maiorValor'
                 ).textContent = '--';
 
-
                 document.getElementById(
                     'menorValor'
                 ).textContent = '--';
 
-
                 atualizarVariacao();
-
                 desenharGrafico();
 
                 return;
-
             }
-
 
             const ultima =
                 leituras[
-                leituras.length - 1
+                    leituras.length - 1
                 ];
-
-
-            // Última leitura
 
             document.getElementById(
                 'ultimaLeitura'
             ).textContent =
                 ultima.valor;
 
-
-            // Média geral
-
             const media =
                 calcularMediaGeral();
-
 
             document.getElementById(
                 'mediaGeral'
@@ -1218,107 +1007,64 @@
                     ? media.toFixed(2)
                     : '--';
 
-
-            // Máximo
-
             document.getElementById(
                 'maiorValor'
             ).textContent =
                 calcularMaiorValor();
-
-
-            // Mínimo
 
             document.getElementById(
                 'menorValor'
             ).textContent =
                 calcularMenorValor();
 
-
-            // Filtro
-
             const bolinha =
                 document.getElementById(
                     'filtroBolinha'
                 );
-
 
             const texto =
                 document.getElementById(
                     'filtroTexto'
                 );
 
-
             if (ultima.filtro === true) {
 
                 bolinha.className =
-                    'filtro-bolinha ativo';
-
+                    'filtro-indicador ativo';
 
                 texto.textContent =
                     'Filtro: ATIVO';
 
-            }
-
-            else {
+            } else {
 
                 bolinha.className =
-                    'filtro-bolinha';
-
+                    'filtro-indicador';
 
                 texto.textContent =
                     'Filtro: INATIVO';
-
             }
 
-
-            // Variação
-
             atualizarVariacao();
-
-
-            // Tabela
-
             atualizarTabela();
-
-
-            // Gráfico
-
             desenharGrafico();
-
-
-            // IA
-
             atualizarIA();
-
-
-            // Atualização
 
             document.getElementById(
                 'ultimaAtualizacao'
             ).textContent =
-                'Atualizado às ' +
+                'Última atualização: ' +
                 new Date().toLocaleTimeString(
                     'pt-BR'
                 );
-
         }
 
-
-        // =====================================
-        // TABELA
-        // =====================================
-
         function atualizarTabela() {
-
             const tabela =
                 document.getElementById(
                     'tabelaLeituras'
                 );
 
-
             tabela.innerHTML = '';
-
 
             [...leituras]
                 .reverse()
@@ -1329,95 +1075,55 @@
                             leituras.length -
                             indice;
 
-
                         const data =
                             formatarData(
                                 leitura.timestamp
                             );
-
 
                         const filtro =
                             leitura.filtro === true
                                 ? 'ATIVO'
                                 : 'INATIVO';
 
-
                         const linha =
                             document.createElement(
                                 'tr'
                             );
 
-
                         linha.innerHTML = `
-
-                        <td>
-                            ${numero}
-                        </td>
-
-                        <td>
-                            <strong>
-                                ${leitura.valor}
-                            </strong>
-                        </td>
-
-                        <td>
-                            ${filtro}
-                        </td>
-
-                        <td>
-                            ${data}
-                        </td>
-
-                        <td
-                            id="ia-${numero}"
-                        >
-                            --
-                        </td>
-
-                    `;
-
+                            <td>${numero}</td>
+                            <td><strong>${leitura.valor}</strong></td>
+                            <td>${filtro}</td>
+                            <td>${data}</td>
+                            <td id="ia-${numero}">--</td>
+                        `;
 
                         tabela.appendChild(
                             linha
                         );
-
                     }
                 );
-
         }
 
-
-        // =====================================
-        // IA
-        // =====================================
-
         function atualizarIA() {
-
             if (barf.length === 0) {
-
                 atualizarEstadoCritico();
-
                 return;
             }
 
-
             const ultimaIA =
                 barf[
-                barf.length - 1
+                    barf.length - 1
                 ];
-
 
             if (
                 ultimaIA &&
                 ultimaIA.ia
             ) {
-
                 mostrarClassificacao(
                     ultimaIA.ia
                 );
-
             }
-
 
             barf.forEach(
                 (registro, index) => {
@@ -1425,144 +1131,110 @@
                     const numero =
                         index + 1;
 
-
                     const elemento =
                         document.getElementById(
                             `ia-${numero}`
                         );
 
-
                     if (
                         elemento &&
                         registro.ia
                     ) {
-
                         elemento.innerHTML =
                             criarStatus(
                                 registro.ia.resultado
                             );
-
                     }
-
                 }
             );
 
-
-            // Verifica se entrou em estado crítico
-
             atualizarEstadoCritico();
-
         }
 
-
         function mostrarClassificacao(ia) {
-
             document.getElementById(
-                'classificacao'
+                'classificacaoValor'
             ).innerHTML =
                 criarStatus(
                     ia.resultado
                 );
 
-
             document.getElementById(
                 'classeNumero'
             ).textContent =
                 `Classe: ${ia.classe}`;
-
         }
 
-
         function criarStatus(resultado) {
-
             let classe =
                 'desconhecido';
 
-
-            if (resultado === 'Aprovado') {
-
+            if (
+                resultado ===
+                'Aprovado'
+            ) {
                 classe =
                     'aprovado';
 
-            }
-
-            else if (resultado === 'Atenção') {
-
+            } else if (
+                resultado ===
+                'Atenção'
+            ) {
                 classe =
                     'atencao';
 
-            }
-
-            else if (resultado === 'Reprovado') {
-
+            } else if (
+                resultado ===
+                'Reprovado'
+            ) {
                 classe =
                     'reprovado';
-
             }
 
-
             return `
-            <span class="status ${classe}">
-                ${resultado}
-            </span>
-        `;
-
+                <span class="status ${classe}">
+                    ${resultado}
+                </span>
+            `;
         }
 
-
-        // =====================================
-        // GRÁFICO
-        // =====================================
-
         function desenharGrafico() {
-
             const canvas =
                 document.getElementById(
                     'graficoLeituras'
                 );
 
-
             const container =
                 canvas.parentElement;
-
 
             const largura =
                 container.clientWidth;
 
-
             const altura =
                 container.clientHeight;
-
 
             const dpr =
                 window.devicePixelRatio || 1;
 
-
             canvas.width =
                 largura * dpr;
-
 
             canvas.height =
                 altura * dpr;
 
-
             canvas.style.width =
                 largura + 'px';
-
 
             canvas.style.height =
                 altura + 'px';
 
-
             const ctx =
                 canvas.getContext('2d');
-
 
             ctx.scale(
                 dpr,
                 dpr
             );
-
 
             ctx.clearRect(
                 0,
@@ -1571,20 +1243,16 @@
                 altura
             );
 
-
             if (leituras.length === 0) {
 
                 ctx.fillStyle =
-                    '#858b99';
-
+                    '#777';
 
                 ctx.font =
-                    '14px Arial';
-
+                    '12px Arial';
 
                 ctx.textAlign =
                     'center';
-
 
                 ctx.fillText(
                     'Nenhuma leitura disponível',
@@ -1592,11 +1260,8 @@
                     altura / 2
                 );
 
-
                 return;
-
             }
-
 
             const valores =
                 leituras.map(
@@ -1604,49 +1269,44 @@
                         Number(leitura.valor)
                 );
 
-
             const max =
                 Math.max(...valores);
-
 
             const min =
                 Math.min(...valores);
 
+            const margemEsquerda =
+                50;
 
-            const margemEsquerda = 45;
+            const margemDireita =
+                20;
 
-            const margemDireita = 15;
+            const margemSuperior =
+                15;
 
-            const margemSuperior = 15;
-
-            const margemInferior = 35;
-
+            const margemInferior =
+                35;
 
             const graficoLargura =
                 largura -
                 margemEsquerda -
                 margemDireita;
 
-
             const graficoAltura =
                 altura -
                 margemSuperior -
                 margemInferior;
-
 
             const intervalo =
                 max === min
                     ? 1
                     : max - min;
 
-
-            // Grade
-
             ctx.strokeStyle =
-                '#292d38';
+                '#d4d4d4';
 
-            ctx.lineWidth = 1;
-
+            ctx.lineWidth =
+                1;
 
             for (
                 let i = 0;
@@ -1656,21 +1316,16 @@
 
                 const y =
                     margemSuperior +
-                    (
-                        graficoAltura *
-                        i /
-                        4
-                    );
-
+                    graficoAltura *
+                    i /
+                    4;
 
                 ctx.beginPath();
-
 
                 ctx.moveTo(
                     margemEsquerda,
                     y
                 );
-
 
                 ctx.lineTo(
                     largura -
@@ -1678,65 +1333,53 @@
                     y
                 );
 
-
                 ctx.stroke();
-
 
                 const valor =
                     max -
-                    (
-                        intervalo *
-                        i /
-                        4
-                    );
-
+                    intervalo *
+                    i /
+                    4;
 
                 ctx.fillStyle =
-                    '#858b99';
-
+                    '#666';
 
                 ctx.font =
-                    '11px Arial';
-
+                    '10px Arial';
 
                 ctx.textAlign =
                     'right';
-
 
                 ctx.fillText(
                     valor.toFixed(0),
                     margemEsquerda - 8,
                     y + 4
                 );
-
             }
 
-
-            // Linha
-
             ctx.strokeStyle =
-                '#58d7ff';
+                '#1f5f91';
 
-            ctx.lineWidth = 2;
+            ctx.lineWidth =
+                2;
 
             ctx.beginPath();
-
 
             valores.forEach(
                 (valor, index) => {
 
                     let x;
 
-
-                    if (valores.length === 1) {
+                    if (
+                        valores.length ===
+                        1
+                    ) {
 
                         x =
                             margemEsquerda +
                             graficoLargura / 2;
 
-                    }
-
-                    else {
+                    } else {
 
                         x =
                             margemEsquerda +
@@ -1747,9 +1390,7 @@
                                 )
                             ) *
                             graficoLargura;
-
                     }
-
 
                     const y =
                         margemSuperior +
@@ -1760,55 +1401,48 @@
                             ) /
                             intervalo
                         ) *
-                        graficoAltura;
+                            graficoAltura;
 
-
-                    if (index === 0) {
+                    if (
+                        index ===
+                        0
+                    ) {
 
                         ctx.moveTo(
                             x,
                             y
                         );
 
-                    }
-
-                    else {
+                    } else {
 
                         ctx.lineTo(
                             x,
                             y
                         );
-
                     }
-
                 }
             );
 
-
             ctx.stroke();
 
-
-            // Pontos
-
             ctx.fillStyle =
-                '#58d7ff';
-
+                '#1f5f91';
 
             valores.forEach(
                 (valor, index) => {
 
                     let x;
 
-
-                    if (valores.length === 1) {
+                    if (
+                        valores.length ===
+                        1
+                    ) {
 
                         x =
                             margemEsquerda +
                             graficoLargura / 2;
 
-                    }
-
-                    else {
+                    } else {
 
                         x =
                             margemEsquerda +
@@ -1819,9 +1453,7 @@
                                 )
                             ) *
                             graficoLargura;
-
                     }
-
 
                     const y =
                         margemSuperior +
@@ -1832,11 +1464,9 @@
                             ) /
                             intervalo
                         ) *
-                        graficoAltura;
-
+                            graficoAltura;
 
                     ctx.beginPath();
-
 
                     ctx.arc(
                         x,
@@ -1846,26 +1476,18 @@
                         Math.PI * 2
                     );
 
-
                     ctx.fill();
-
                 }
             );
 
-
-            // Horários
-
             ctx.fillStyle =
-                '#858b99';
-
+                '#666';
 
             ctx.font =
-                '11px Arial';
-
+                '10px Arial';
 
             ctx.textAlign =
                 'center';
-
 
             const quantidadeLabels =
                 Math.min(
@@ -1873,12 +1495,13 @@
                     6
                 );
 
-
-            if (quantidadeLabels === 1) {
+            if (
+                quantidadeLabels ===
+                1
+            ) {
 
                 const leitura =
                     leituras[0];
-
 
                 const hora =
                     leitura.timestamp
@@ -1894,7 +1517,6 @@
                         )
                         : '1';
 
-
                 ctx.fillText(
                     hora,
                     margemEsquerda +
@@ -1902,9 +1524,7 @@
                     altura - 10
                 );
 
-            }
-
-            else {
+            } else {
 
                 for (
                     let i = 0;
@@ -1925,7 +1545,6 @@
                             )
                         );
 
-
                     const x =
                         margemEsquerda +
                         (
@@ -1934,12 +1553,10 @@
                                 valores.length - 1
                             )
                         ) *
-                        graficoLargura;
-
+                            graficoLargura;
 
                     const leitura =
                         leituras[indice];
-
 
                     const hora =
                         leitura.timestamp
@@ -1955,90 +1572,28 @@
                             )
                             : indice + 1;
 
-
                     ctx.fillText(
                         hora,
                         x,
                         altura - 10
                     );
-
                 }
-
             }
-
         }
 
-
-        // =====================================
-        // DATA
-        // =====================================
-
         function formatarData(timestamp) {
-
             if (!timestamp) {
                 return '--';
             }
-
 
             return new Date(
                 timestamp
             ).toLocaleString(
                 'pt-BR'
             );
-
         }
 
-
-        // =====================================
-        // INICIALIZAÇÃO
-        // =====================================
-
-        carregarLeituras();
-
-        carregarBarf();
-
-
-        // Atualização a cada 5 segundos
-
-        setInterval(
-            () => {
-
-                carregarLeituras();
-
-                carregarBarf();
-
-            },
-            5000
-        );
-
-
-        // Redesenhar ao redimensionar
-
-        window.addEventListener(
-            'resize',
-            () => {
-
-                desenharGrafico();
-
-            }
-        );
-
-        // =====================================
-        // ESTADO CRÍTICO
-        // =====================================
-
         function atualizarEstadoCritico() {
-
-            const alerta =
-                document.getElementById(
-                    'alertaCritico'
-                );
-
-
-            /*
-             * Não existe classificação ainda.
-             */
-
             if (barf.length === 0) {
 
                 document.body.classList.remove(
@@ -2048,24 +1603,16 @@
                 return;
             }
 
-
             const ultimaIA =
                 barf[
-                barf.length - 1
+                    barf.length - 1
                 ];
-
-
-            /*
-             * Verifica a classificação
-             * mais recente da IA.
-             */
 
             const critico =
                 ultimaIA &&
                 ultimaIA.ia &&
                 ultimaIA.ia.resultado ===
                 'Reprovado';
-
 
             if (critico) {
 
@@ -2078,11 +1625,134 @@
                 document.body.classList.remove(
                     'estado-critico'
                 );
-
             }
-
         }
 
+        function atualizarMenu() {
+            const secoes = [
+                {
+                    id: 'monitoramento',
+                    link: document.querySelector(
+                        '.menu a[href="#monitoramento"]'
+                    )
+                },
+                {
+                    id: 'classificacao',
+                    link: document.querySelector(
+                        '.menu a[href="#classificacao"]'
+                    )
+                },
+                {
+                    id: 'leituras',
+                    link: document.querySelector(
+                        '.menu a[href="#leituras"]'
+                    )
+                },
+                {
+                    id: 'historico',
+                    link: document.querySelector(
+                        '.menu a[href="#historico"]'
+                    )
+                }
+            ];
+
+            let secaoAtual = 'monitoramento';
+
+            secoes.forEach(
+                secao => {
+
+                    const elemento =
+                        document.getElementById(
+                            secao.id
+                        );
+
+                    if (!elemento) {
+                        return;
+                    }
+
+                    const distancia =
+                        Math.abs(
+                            elemento.getBoundingClientRect().top - 60
+                        );
+
+                    if (
+                        distancia <
+                        Math.abs(
+                            document.getElementById(
+                                secaoAtual
+                            ).getBoundingClientRect().top - 60
+                        )
+                    ) {
+                        secaoAtual =
+                            secao.id;
+                    }
+                }
+            );
+
+            secoes.forEach(
+                secao => {
+
+                    secao.link.classList.toggle(
+                        'ativo',
+                        secao.id === secaoAtual
+                    );
+
+                }
+            );
+        }
+
+        carregarLeituras();
+        carregarBarf();
+
+        setInterval(
+            () => {
+                carregarLeituras();
+                carregarBarf();
+            },
+            5000
+        );
+
+        window.addEventListener(
+            'resize',
+            () => {
+                desenharGrafico();
+            }
+        );
+
+        window.addEventListener(
+            'scroll',
+            atualizarMenu
+        );
+
+        document.querySelectorAll(
+            '.menu a'
+        ).forEach(
+            link => {
+
+                link.addEventListener(
+                    'click',
+                    () => {
+
+                        document.querySelectorAll(
+                            '.menu a'
+                        ).forEach(
+                            item => {
+                                item.classList.remove(
+                                    'ativo'
+                                );
+                            }
+                        );
+
+                        link.classList.add(
+                            'ativo'
+                        );
+                    }
+                );
+
+            }
+        );
+
+        atualizarMenu();
     </script>
 
 </body>
