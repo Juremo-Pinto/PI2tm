@@ -101,8 +101,6 @@ class Program
 
             string json = ConverterParaJson(leitura);
 
-            Console.WriteLine($"Enviando: {json}");
-
             try
             {
                 HttpResponseMessage resposta = await EnviarParaApi(

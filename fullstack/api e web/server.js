@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json());
 
 const DADOS_PATH = path.join(__dirname, 'data', 'dados.json');
-const BARF_PATH = path.join(__dirname, 'barf', 'barf.json')
+const BARF_PATH = path.join(__dirname, 'data', 'barf.json')
 
 app.get('/leituras', (req, res) => {
     res.sendFile(
@@ -51,13 +51,11 @@ function salvarBarf(barf) {
 }
 
 async function enviarParaIA(valor) {
-    const resposta = await fetch('http://localhost:5000/preview', {
+    const resposta = await fetch('http://127.0.0.1:5000/preview', {
         method: 'POST',
-
         headers: {
             'Content-Type': 'application/json'
         },
-
         body: JSON.stringify({
             valor: valor
         })
@@ -109,7 +107,7 @@ app.post('/leituras', async (req, res) => {
             erro.message
         );
 
-        return res.status(201).json({
+        return res.status(500).json({
             leitura: leitura,
             ia: null,
             erro: 'Não foi possível consultar a IA'

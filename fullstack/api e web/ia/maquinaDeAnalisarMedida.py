@@ -20,7 +20,6 @@ print("Carregou :D")
 @app.post("/preview")
 def prever():
 
-    # Recebe o JSON
     data = request.get_json()
 
     if not data:
@@ -28,7 +27,6 @@ def prever():
             "erro": "Nenhum JSON recebido"
         }), 400
 
-    # Verifica se recebeu o valor
     if "valor" not in data:
         return jsonify({
             "erro": "Campo 'valor' não foi enviado"
@@ -36,31 +34,21 @@ def prever():
 
     value = data["valor"]
 
-    # Verifica se é número
-    if not isinstance(value, (int, float)):
-        return jsonify({
-            "erro": "O valor precisa ser um número"
-        }), 400
-
     try:
-
-        # Faz a previsão
         prediction = modelo.predict([[value]])[0]
 
-        # Classes da IA
         classes = {
             0: "Aprovado",
             1: "Atenção",
             2: "Reprovado"
         }
 
-        # Converte classe para texto
         result = classes.get(
             int(prediction),
             "Desconhecido"
         )
 
-        # Retorna o resultado
+
         return jsonify({
             "valor": value,
             "classe": int(prediction),
@@ -79,7 +67,7 @@ if __name__ == "__main__":
     app.run(
         host="127.0.0.1",
         port=5000,
-        debug=True
+        debug=False
     )
 
 # im such a fat fucking chud
