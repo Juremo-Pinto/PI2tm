@@ -692,7 +692,7 @@ Da mesma forma, o modelo de Machine Learning possui finalidade acadêmica e não
 Sistema acadêmico de monitoramento e classificação de condições ambientais para simulação de uma *clean room* aplicada à entrada de uma linha de produção de CPUs.
 
 ```text
-STM32 → C# → Node.js → Machine Learning → Interface Web
+Sistemas Embarcados - Linguagens de Programação - Desenvolvimento de Aplicativos - Inteligência Artificial
 ```
 
 Desenvolvido para integração prática entre hardware, software, comunicação, inteligência artificial e desenvolvimento web.
