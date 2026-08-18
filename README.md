@@ -1,138 +1,261 @@
-# Sistema de Monitoramento da Pureza do Ar
+# CRMS — Clean Room Monitoring System
 
-Projeto acadêmico de integração entre Sistemas Embarcados, Linguagens de Programação, Inteligência Artificial e Desenvolvimento de Aplicativos.
+Sistema integrado de monitoramento e classificação da condição do ambiente de uma *clean room*, desenvolvido para o Projeto Integrado SÉRIE: 34 DS.
 
-O projeto simula um sistema de monitoramento da qualidade do ar para uma sala limpa (*clean room*) utilizada na entrada de uma linha de produção de CPUs.
+O CRMS simula um sistema utilizado para acompanhar a concentração de partículas em uma sala limpa localizada na entrada de uma linha de produção de CPUs. A solução integra um sistema embarcado, comunicação serial, aplicação intermediária, API REST, Machine Learning e interface Web.
 
-Em ambientes de fabricação de semicondutores, a presença de partículas e contaminantes no ar é um fator importante para a qualidade do processo. Neste projeto, um potenciômetro ou trimpot é utilizado como representação de um sensor de concentração de partículas. A posição do potenciômetro representa a concentração de partículas presente no ambiente.
+> Projeto acadêmico de integração entre Sistemas Embarcados, Linguagens de Programação, Inteligência Artificial e Desenvolvimento de Aplicativos.
+> **Vídeo:** [INSERIR LINK]
 
-O sistema realiza a aquisição da leitura através de um STM32, transmite os dados para um computador utilizando USB CDC, processa as informações em uma aplicação C#, envia os dados para uma API REST e utiliza um modelo de Machine Learning para classificar automaticamente a condição do ambiente.
+---
 
-A classificação final deverá indicar se a condição do ambiente é adequada, intermediária ou inadequada para a entrada na linha de produção.
+## Projeto Integrado
 
-## Arquitetura
+**SÉRIE:** 34 DS
 
-O fluxo principal do sistema é:
+**Período:** 04 a 21/08
 
-```text
-Potenciômetro / Trimpot
-        ↓
-      ADC
-        ↓
-      STM32
-        ↓
-     USB CDC
-        ↓
-     Porta COM
-        ↓
-   Aplicação C#
-        ↓
-       JSON
-        ↓
-     API REST
-        ↓
-  Modelo de Machine Learning
-        ↓
-    Classificação
-        ↓
-  data/dados.json
-        ↓
-   Interface Web
-```
+### Disciplinas
 
-## Conceito do projeto
+- Sistemas Embarcados (SEB)
+- Desenvolvimento de Aplicativos (DAPL)
+- Inteligência Artificial (IA)
+- Linguagens de Programação (LPR)
 
-O potenciômetro conectado ao STM32 simula um sensor de concentração de partículas no ar.
+### Professores
 
-O valor produzido pelo ADC representa a quantidade de partículas detectada pelo sensor simulado. O STM32 converte a leitura do ADC para a escala de concentração utilizada pelo projeto.
+- Ana Leticia G. Gonçalves
+- Daniel Albino Mosca
+- José Andery Carneiro
 
-A interpretação conceitual é:
+### Integrantes
 
-```text
-Menor concentração de partículas
-            ↓
-       Ar mais limpo
-            ↓
-      Melhor condição
-```
+- 
+- 
+- 
 
-e:
+### Avaliação
+
+| Disciplina | Valor |
+|---|---:|
+| SEB | 50 pts |
+| LPR | 50 pts |
+| DAPL | 50 pts |
+| IA | 50 pts |
+
+---
+
+# Sobre o CRMS
+
+O **Clean Room Monitoring System (CRMS)** é uma simulação de um sistema de monitoramento de partículas destinado a acompanhar a condição de uma sala limpa.
+
+Em ambientes de fabricação de semicondutores, partículas e outros contaminantes presentes no ar podem comprometer processos de fabricação. O projeto utiliza um potenciômetro ou trimpot como representação de um sensor de concentração de partículas.
+
+A posição do potenciômetro representa a concentração de partículas detectada pelo sensor simulado.
+
+O sistema realiza o seguinte processo:
 
 ```text
-Maior concentração de partículas
-            ↓
-       Ar mais contaminado
-            ↓
-      Pior condição
-```
+Sensor simulado
+      ↓
+    STM32
+      ↓
+    ADC
+      ↓
+   USB CDC
+      ↓
+   Porta COM
+      ↓
+ Aplicação C#
+      ↓
+     JSON
+      ↓
+   API REST
+      ↓
+ Machine Learning
+      ↓
+ Classificação
+      ↓
+ Armazenamento
+      ↓
+ Interface Web
+````
 
-A classificação automática será realizada por um modelo de Machine Learning, utilizando os valores de concentração como entrada.
-
-As categorias previstas inicialmente são:
+A classificação final do ambiente é dividida em três estados:
 
 ```text
-Bom
-Médio
-Ruim
+Aprovado
+Atenção
+Reprovado
 ```
 
-Os intervalos definitivos utilizados no treinamento do modelo deverão ser definidos de acordo com a escala de concentração adotada pelo projeto.
+Esses estados representam, respectivamente, uma condição adequada, intermediária ou inadequada para a entrada na linha de produção.
 
-## 1. Aquisição de dados — STM32
+---
 
-O STM32F103C8 realiza a leitura do potenciômetro conectado ao pino:
+# Objetivo
+
+O objetivo do projeto é desenvolver uma solução distribuída capaz de realizar aquisição, processamento, comunicação, classificação e visualização de dados.
+
+A arquitetura foi construída de forma semelhante a uma aplicação de Internet das Coisas (IoT), envolvendo:
+
+* aquisição de dados;
+* processamento no dispositivo;
+* comunicação entre sistemas;
+* conversão e transmissão de dados;
+* processamento em servidor;
+* classificação automática;
+* armazenamento;
+* visualização em uma interface Web.
+
+O projeto também busca integrar os conceitos das quatro disciplinas envolvidas na atividade.
+
+---
+
+# Arquitetura do sistema
+
+O CRMS é dividido em cinco módulos principais:
 
 ```text
-PA1 → ADC1_IN1
+┌──────────────────────┐
+│  STM32F103C8         │
+│                      │
+│  Trimpot → ADC       │
+│  Filtragem           │
+│  USB CDC             │
+└──────────┬───────────┘
+           │
+           │ USB
+           ▼
+┌──────────────────────┐
+│  Aplicação C#        │
+│                      │
+│  Porta COM           │
+│  Validação           │
+│  JSON                │
+│  HTTP                │
+└──────────┬───────────┘
+           │
+           │ HTTP / JSON
+           ▼
+┌──────────────────────┐
+│  API Node.js         │
+│                      │
+│  Express             │
+│  Armazenamento       │
+│  Integração com IA   │
+└───────┬────────┬─────┘
+        │        │
+        │        │ HTTP
+        │        ▼
+        │  ┌──────────────────┐
+        │  │  Modelo de IA    │
+        │  │                  │
+        │  │  Classificação   │
+        │  └──────────────────┘
+        │
+        ▼
+┌──────────────────────┐
+│  Interface Web       │
+│                      │
+│  Leitura atual       │
+│  Classificação       │
+│  Histórico           │
+│  Estado do sistema   │
+└──────────────────────┘
 ```
 
-O ADC do STM32F103C8 possui resolução de 12 bits, produzindo valores entre:
+---
+
+# 1. Aquisição de dados — STM32
+
+O módulo embarcado utiliza um **STM32F103C8** para realizar a aquisição da variável física simulada.
+
+O potenciômetro ou trimpot representa o sensor de concentração de partículas.
+
+A leitura é realizada pelo ADC do microcontrolador e posteriormente convertida para a escala utilizada pelo sistema.
+
+## ADC
+
+O ADC utilizado possui resolução de 12 bits:
 
 ```text
 0 → 4095
 ```
 
-A leitura é convertida pelo firmware para uma escala de concentração utilizada pelo sistema.
-
-Atualmente, a conversão é realizada pela função:
-
-```c
-uint16_t ConverterConcentracao(uint16_t adc)
-{
-    return ((uint32_t) adc * 1000) / 4095;
-}
-```
-
-Dessa forma:
+A leitura é convertida para uma escala simulada de:
 
 ```text
-ADC = 0       → concentração = 0
-ADC = 4095    → concentração = 1000
+0 → 1000
 ```
 
-A escala de `0` a `1000` representa a concentração utilizada pelo modelo do projeto. Ela não representa diretamente uma medição física real de PM2.5 em µg/m³; o potenciômetro é uma simulação do sensor.
-
-### Filtragem
-
-O STM32 possui um GPIO responsável por ativar ou desativar o pré-processamento da leitura.
-
-Quando o filtro está desativado, a concentração convertida é enviada diretamente.
-
-Quando o filtro está ativado, é aplicada uma média móvel.
-
-A implementação atual utiliza uma janela de 8 amostras:
+A conversão utilizada atualmente é:
 
 ```text
-FILTER_SIZE = 8
+concentração = ADC × 1000 / 4095
 ```
 
-A média móvel reduz oscilações instantâneas na leitura e produz uma representação mais estável da concentração.
+Assim:
 
-A primeira leitura utilizada pelo filtro inicializa todas as posições da janela, evitando que as primeiras médias sejam artificialmente reduzidas por valores inicialmente indefinidos.
+|                  ADC | Concentração |
+| -------------------: | -----------: |
+|                    0 |            0 |
+| aproximadamente 1024 |          250 |
+| aproximadamente 2048 |          500 |
+| aproximadamente 3072 |          750 |
+|                 4095 |         1000 |
 
-### Protocolo de transmissão
+Essa escala é utilizada exclusivamente para a simulação.
 
-O STM32 transmite os dados pela USB CDC utilizando o formato:
+Ela não representa diretamente uma medição física de PM2.5, PM10 ou qualquer outra unidade real de concentração. O potenciômetro funciona como um sensor analógico simulado.
+
+## Filtragem
+
+O firmware possui uma opção de pré-processamento da leitura através de GPIO.
+
+O filtro utilizado é uma **média móvel**.
+
+Atualmente, a janela possui quatro posições:
+
+```text
+FILTER_SIZE = 4
+```
+
+Quando o filtro está ativado, cada nova leitura é adicionada à janela e a média das quatro posições é utilizada como valor final.
+
+A primeira leitura recebida inicializa todas as posições da janela, evitando que os valores iniciais interfiram artificialmente no resultado.
+
+A filtragem tem como objetivo reduzir pequenas oscilações causadas pelo ruído do potenciômetro.
+
+## Controle do filtro
+
+O estado do filtro é determinado pelo pino:
+
+```text
+PA10
+```
+
+O pino utiliza `GPIO_PULLUP`.
+
+A lógica utilizada é:
+
+```text
+PA10 = LOW
+    ↓
+Filtro ativado
+
+PA10 = HIGH
+    ↓
+Filtro desativado
+```
+
+Dessa forma, o hardware permite alternar entre o valor diretamente convertido e o valor processado pela média móvel.
+
+## Transmissão USB CDC
+
+O STM32 utiliza **USB CDC (Communications Device Class)** para apresentar a comunicação ao computador como uma Porta COM.
+
+Cada leitura é transmitida no formato:
 
 ```text
 valor;filtro\r\n
@@ -151,46 +274,73 @@ Onde:
 1   → filtro ativado
 ```
 
-O segundo campo pode assumir:
+O campo do filtro pode assumir:
 
 ```text
-0 → filtro desativado
-1 → filtro ativado
+0 → desativado
+1 → ativado
 ```
 
-Cada transmissão termina com `\r\n`, permitindo que a aplicação C# realize a leitura utilizando `ReadLine()`.
+O intervalo entre transmissões é de cinco segundos.
 
-### Estado atual
+```text
+Leitura
+   ↓
+Processamento
+   ↓
+Transmissão USB CDC
+   ↓
+Aguarda 5 segundos
+   ↓
+Nova leitura
+```
 
-A aquisição já possui:
+---
 
-* leitura do ADC1;
-* utilização do PA1 como ADC1_IN1;
-* conversão do ADC para a escala de concentração;
-* filtro de média móvel;
-* ativação/desativação do filtro através de GPIO;
-* transmissão através de USB CDC;
-* protocolo serial definido.
+# 2. Comunicação — C#
 
-## 2. Comunicação — C#
+A aplicação intermediária foi desenvolvida em **C#** e atua como ponte entre o STM32 e o servidor.
 
-A aplicação em C# funciona como intermediária entre o STM32 e o servidor.
-
-Suas responsabilidades são:
+Suas principais responsabilidades são:
 
 1. Abrir a Porta COM.
-2. Receber continuamente as medições.
-3. Interpretar os dados recebidos.
-4. Validar as informações.
-5. Organizar cada leitura em um objeto.
-6. Adicionar um timestamp.
-7. Converter a leitura para JSON.
-8. Enviar o JSON para a API através de HTTP.
-9. Receber e apresentar a resposta da API.
+2. Receber continuamente as leituras do STM32.
+3. Validar os dados recebidos.
+4. Converter os dados para um objeto C#.
+5. Adicionar o timestamp da leitura.
+6. Serializar os dados para JSON.
+7. Enviar os dados para a API REST.
+8. Receber e apresentar a resposta do servidor.
 
-### Estrutura da leitura
+## Porta serial
 
-Cada leitura é representada pela classe:
+A aplicação utiliza:
+
+```text
+Porta: COM5
+BaudRate: 115200
+NewLine: \r\n
+```
+
+O protocolo utilizado pelo STM32 permite que a aplicação utilize `ReadLine()` para obter cada transmissão completa.
+
+## Processamento da leitura
+
+Uma mensagem recebida:
+
+```text
+512;1
+```
+
+é convertida para:
+
+```text
+Valor     = 512
+Filtro    = true
+Timestamp = horário atual
+```
+
+A estrutura utilizada é:
 
 ```csharp
 class Leitura
@@ -201,280 +351,329 @@ class Leitura
 }
 ```
 
-Uma mensagem recebida do STM32:
+A aplicação também valida:
 
-```text
-512;1
-```
+* quantidade de campos;
+* valor numérico;
+* estado do filtro.
 
-é interpretada como:
+Leituras inválidas são descartadas antes de serem enviadas ao servidor.
 
-```text
-Valor     = 512
-Filtro    = true
-Timestamp = horário atual
-```
+## JSON
 
-A aplicação então converte os dados para JSON utilizando camelCase:
-
-```json
-{
-  "valor": 512,
-  "filtro": true,
-  "timestamp": "2026-08-10T08:00:00"
-}
-```
-
-### Organização do código
-
-A aplicação foi dividida em funções para separar responsabilidades:
-
-* `ConfigurarPorta()` configura e abre a Porta COM.
-* `ProcessarLinha()` interpreta e valida os dados recebidos.
-* `ConverterParaJson()` realiza a serialização.
-* `EnviarParaApi()` realiza a requisição HTTP.
-* `Main()` coordena o fluxo principal da aplicação.
-
-### Estado atual
-
-A comunicação já possui:
-
-* leitura contínua da Porta COM;
-* validação das informações recebidas;
-* conversão para objeto C#;
-* geração de timestamp;
-* serialização em JSON;
-* envio através de HTTP;
-* tratamento básico de erros HTTP.
-
-## 3. Inteligência Artificial
-
-O sistema deverá utilizar um modelo de Machine Learning para classificar automaticamente cada leitura de concentração de partículas.
-
-A entrada principal do modelo será a concentração de partículas simulada pelo potenciômetro.
-
-A classificação inicial será dividida em três categorias:
-
-```text
-Bom
-Médio
-Ruim
-```
-
-A interpretação conceitual será:
-
-```text
-Baixa concentração
-       ↓
-      Bom
-```
-
-```text
-Concentração intermediária
-       ↓
-      Médio
-```
-
-```text
-Alta concentração
-       ↓
-      Ruim
-```
-
-Os limites exatos entre as categorias serão definidos durante a preparação dos dados utilizados para treinamento e validação do modelo.
-
-O modelo deverá receber uma nova leitura e retornar automaticamente sua classificação.
-
-### Requisitos
-
-* Utilização de um modelo de classificação.
-* Classificação automática de cada nova leitura.
-* Pelo menos três categorias.
-* Integração do modelo com a API REST.
-
-## 4. Servidor Web — API REST
-
-O servidor será responsável por receber as medições enviadas pela aplicação C#, armazenar os dados e posteriormente integrar o processamento de Inteligência Artificial.
-
-O servidor utiliza Node.js e Express.
-
-Fluxo esperado:
-
-```text
-Aplicação C#
-      ↓
-POST /leituras
-      ↓
-Servidor
-      ↓
-Armazenamento
-      ↓
-Modelo de IA
-      ↓
-Classificação
-      ↓
-Resposta JSON
-```
-
-### Armazenamento
-
-As leituras recebidas serão armazenadas em:
-
-```text
-data/dados.json
-```
-
-A API realiza a leitura do arquivo, adiciona a nova medição à coleção existente e grava novamente o arquivo em formato JSON.
-
-Estrutura prevista:
-
-```text
-servidor/
-├── server.js
-├── package.json
-└── data/
-    └── dados.json
-```
-
-O arquivo `dados.json` funciona como armazenamento persistente simples para o projeto.
+Depois do processamento, a leitura é serializada utilizando `camelCase`.
 
 Exemplo:
 
 ```json
-[
-  {
-    "valor": 512,
-    "filtro": true,
-    "timestamp": "2026-08-10T08:00:00"
-  }
-]
+{
+  "valor": 512,
+  "filtro": true,
+  "timestamp": "2026-08-18T08:00:00"
+}
 ```
 
-### Endpoint de recebimento
+Esse objeto é enviado através de HTTP para:
+
+```text
+POST http://localhost:3001/leituras
+```
+
+## Organização
+
+As principais responsabilidades estão separadas nas seguintes funções:
+
+```text
+ConfigurarPorta()
+        ↓
+Configuração da comunicação serial
+
+ProcessarLinha()
+        ↓
+Validação e interpretação
+
+ConverterParaJson()
+        ↓
+Serialização
+
+EnviarParaApi()
+        ↓
+Requisição HTTP
+
+Main()
+        ↓
+Coordenação do fluxo
+```
+
+---
+
+# 3. Servidor Web — Node.js
+
+O servidor foi desenvolvido utilizando **Node.js** e **Express**.
+
+Ele funciona como o núcleo de integração entre a aplicação C#, o armazenamento, o modelo de Machine Learning e a interface Web.
+
+O fluxo principal é:
+
+```text
+C#
+ ↓
+POST /leituras
+ ↓
+Node.js
+ ↓
+Armazena leitura
+ ↓
+Envia valor para IA
+ ↓
+Recebe classificação
+ ↓
+Armazena resultado
+ ↓
+Retorna resposta
+```
+
+## Endpoint de recebimento
 
 ```text
 POST /leituras
 ```
 
-Exemplo de requisição:
+Recebe uma leitura no formato:
 
 ```json
 {
   "valor": 512,
   "filtro": true,
-  "timestamp": "2026-08-10T08:00:00"
+  "timestamp": "2026-08-18T08:00:00"
 }
 ```
 
-A API adiciona essa leitura ao conjunto armazenado em:
+A leitura é adicionada ao arquivo:
 
 ```text
 data/dados.json
 ```
 
-### Endpoint de consulta
+Depois disso, somente o valor da concentração é enviado para o módulo de IA.
+
+## Endpoint de visualização
 
 ```text
 GET /leituras
 ```
 
-Retorna as leituras armazenadas no arquivo JSON.
+Esse endpoint disponibiliza a interface Web principal do sistema.
 
-### Integração futura com IA
-
-Após a implementação do modelo de Machine Learning, o fluxo do endpoint deverá ser ampliado para:
+A página é carregada a partir de:
 
 ```text
-POST /leituras
-      ↓
-Receber leitura
-      ↓
-Validar dados
-      ↓
-Enviar valor para o modelo
-      ↓
-Receber classificação
-      ↓
-Adicionar classificação à leitura
-      ↓
-Salvar em dados.json
-      ↓
-Retornar JSON ao C#
+public/index.html
 ```
 
-Uma leitura armazenada poderá então possuir uma estrutura semelhante a:
+## Endpoint de dados
+
+```text
+GET /api/leituras
+```
+
+Retorna as leituras armazenadas em formato JSON.
+
+Esse endpoint é utilizado pela interface Web para obter os dados necessários à visualização.
+
+## Endpoint de resultados da IA
+
+```text
+GET /api/barf
+```
+
+Retorna os resultados de classificação armazenados pelo servidor.
+
+Os resultados são armazenados em:
+
+```text
+data/barf.json
+```
+
+O arquivo mantém os resultados produzidos pelo modelo para cada leitura processada.
+
+---
+
+# 4. Inteligência Artificial
+
+O CRMS utiliza um modelo de **Machine Learning previamente treinado** para classificar automaticamente cada leitura.
+
+O modelo é carregado através da biblioteca `joblib`:
+
+```text
+modelo.pkl
+```
+
+O servidor de IA foi desenvolvido utilizando **Python** e **Flask**.
+
+## Fluxo da classificação
+
+```text
+Leitura
+   ↓
+API Node.js
+   ↓
+valor
+   ↓
+API Flask
+   ↓
+modelo.pkl
+   ↓
+Predição
+   ↓
+Classe
+   ↓
+Resultado textual
+```
+
+A API recebe uma requisição:
+
+```text
+POST /preview
+```
+
+Com:
+
+```json
+{
+  "valor": 512
+}
+```
+
+O modelo realiza a previsão utilizando o valor recebido.
+
+## Classes
+
+O sistema utiliza três classes:
+
+```text
+0 → Aprovado
+1 → Atenção
+2 → Reprovado
+```
+
+A interpretação conceitual é:
+
+```text
+Baixa concentração
+        ↓
+    Aprovado
+```
+
+```text
+Concentração intermediária
+        ↓
+     Atenção
+```
+
+```text
+Alta concentração
+        ↓
+    Reprovado
+```
+
+A definição dos limites e do comportamento do modelo depende do dataset utilizado durante seu treinamento.
+
+## Resposta da IA
+
+Uma resposta bem-sucedida possui a estrutura:
+
+```json
+{
+  "valor": 512,
+  "classe": 0,
+  "resultado": "Aprovado"
+}
+```
+
+O Node.js utiliza o resultado retornado pela IA para montar a resposta final da API.
+
+---
+
+# 5. Interface Web
+
+A interface Web funciona como o painel de acompanhamento do CRMS.
+
+Ela apresenta as informações relevantes sobre o estado atual da sala limpa e o histórico das medições recebidas.
+
+Entre as informações apresentadas estão:
+
+* leitura atual;
+* classificação atual;
+* estado do filtro;
+* horário da última atualização;
+* histórico das leituras;
+* estado visual do ambiente.
+
+A interface consulta os dados através da API REST e atualiza as informações conforme novas medições são processadas.
+
+A classificação também possui representação visual de acordo com o estado retornado pelo modelo:
+
+```text
+APROVADO
+    ↓
+Condição adequada
+
+ATENÇÃO
+    ↓
+Condição intermediária
+
+REPROVADO
+    ↓
+Condição inadequada
+```
+
+---
+
+# 6. Armazenamento
+
+O projeto utiliza arquivos JSON como armazenamento persistente simples.
+
+As leituras são armazenadas em:
+
+```text
+data/dados.json
+```
+
+Os resultados da classificação são armazenados em:
+
+```text
+data/barf.json
+```
+
+Uma leitura armazenada possui uma estrutura semelhante a:
 
 ```json
 {
   "valor": 512,
   "filtro": true,
-  "timestamp": "2026-08-10T08:00:00",
-  "classificacao": "Bom"
+  "timestamp": "2026-08-18T08:00:00"
 }
 ```
 
-### Requisitos
+Enquanto o resultado da IA é armazenado separadamente:
 
-* Endpoint para recebimento das medições.
-* Comunicação HTTP.
-* Utilização de JSON.
-* Armazenamento das medições.
-* Chamada do modelo de IA.
-* Retorno da classificação ao cliente.
-* Disponibilização dos dados para o frontend.
-
-## 5. Interface Web
-
-A interface Web deverá apresentar o estado atual do ambiente monitorado e o histórico das medições.
-
-A página deverá apresentar:
-
-* concentração atual de partículas;
-* classificação produzida pelo modelo de IA;
-* estado do filtro;
-* histórico das últimas leituras;
-* horário da última atualização;
-* indicação visual do estado atual do ambiente.
-
-A interface deverá consultar os dados disponibilizados pela API e ser atualizada conforme novas medições forem recebidas.
-
-### Exemplo de estrutura
-
-```text
-┌─────────────────────────────────────┐
-│       MONITORAMENTO DA CLEAN ROOM   │
-├─────────────────────────────────────┤
-│                                     │
-│  Concentração atual:     512        │
-│  Classificação:          Bom        │
-│  Filtro:                 Ativo      │
-│  Última atualização:     08:00:00   │
-│                                     │
-├─────────────────────────────────────┤
-│              Histórico              │
-│                                     │
-│  07:59:50   508   Bom               │
-│  07:59:40   512   Bom               │
-│  07:59:30   545   Médio             │
-│  07:59:20   530   Médio             │
-│                                     │
-└─────────────────────────────────────┘
+```json
+{
+  "ia": {
+    "classe": 0,
+    "resultado": "Aprovado"
+  }
+}
 ```
 
-A indicação visual deverá permitir identificar rapidamente a condição atual do ambiente.
+Essa separação permite que as medições e as classificações sejam consultadas independentemente.
 
-### Requisitos
+---
 
-* Exibição da leitura atual.
-* Exibição da classificação.
-* Histórico das últimas medições.
-* Horário da última atualização.
-* Indicação visual do estado atual.
-* Atualização conforme novas medições são recebidas.
+# Protocolo de comunicação
 
-## Protocolo de Comunicação
-
-Atualmente, o STM32 transmite cada leitura no formato:
+O protocolo utilizado entre o STM32 e a aplicação C# é deliberadamente simples:
 
 ```text
 valor;filtro\r\n
@@ -483,92 +682,91 @@ valor;filtro\r\n
 Exemplo:
 
 ```text
+483;0\r\n
+```
+
+Interpretação:
+
+```text
+Valor = 483
+Filtro = desativado
+```
+
+Outro exemplo:
+
+```text
 512;1\r\n
 ```
 
-A aplicação C# separa os campos utilizando `;`.
-
-O primeiro campo representa a concentração:
+Interpretação:
 
 ```text
-512
+Valor = 512
+Filtro = ativado
 ```
 
-O segundo representa o estado do filtro:
+Depois de recebida, a aplicação C# transforma a informação em JSON:
 
-```text
-1
+```json
+{
+  "valor": 512,
+  "filtro": true,
+  "timestamp": "2026-08-18T08:00:00"
+}
 ```
 
-A aplicação converte o segundo campo para booleano:
+Esse JSON é transmitido para a API através de HTTP.
 
-```text
-1 → true
-0 → false
-```
+---
 
-Em seguida, adiciona o timestamp e serializa os dados para JSON.
+# Escala de concentração
 
-O JSON é enviado através de uma requisição HTTP para:
-
-```text
-POST /leituras
-```
-
-A API recebe o objeto e o armazena em:
-
-```text
-data/dados.json
-```
-
-## Escala da concentração
-
-O ADC do STM32 possui resolução de 12 bits:
+O valor original produzido pelo ADC varia entre:
 
 ```text
 0 → 4095
 ```
 
-O projeto converte essa faixa para uma escala de concentração simulada:
+O firmware converte esse valor para:
 
 ```text
 0 → 1000
 ```
 
-A relação utilizada atualmente é:
+A relação é:
 
 ```text
 concentração = ADC × 1000 / 4095
 ```
 
-Portanto:
+Exemplo:
 
-|                  ADC | Concentração |
-| -------------------: | -----------: |
-|                    0 |            0 |
-| aproximadamente 1024 |          250 |
-| aproximadamente 2048 |          500 |
-| aproximadamente 3072 |          750 |
-|                 4095 |         1000 |
+|  ADC |        Concentração |
+| ---: | ------------------: |
+|    0 |                   0 |
+| 1024 | aproximadamente 250 |
+| 2048 | aproximadamente 500 |
+| 3072 | aproximadamente 750 |
+| 4095 |                1000 |
 
-Essa escala é uma representação utilizada para a simulação. Ela não deve ser interpretada como uma medição física real de partículas.
+A escala representa uma variável física simulada e não uma unidade de concentração real.
 
-Os intervalos utilizados pela Inteligência Artificial deverão ser definidos sobre essa escala.
+---
 
-## Tecnologias
+# Tecnologias utilizadas
 
-### Sistemas Embarcados
+## Sistemas Embarcados
 
 * STM32F103C8
 * C
 * STM32 HAL
-* USB CDC
 * ADC
 * GPIO
+* USB CDC
 * Potenciômetro / Trimpot
 * Média móvel
 
-### Comunicação
+## Linguagens de Programação
 
 * C#
 * .NET
@@ -577,34 +775,32 @@ Os intervalos utilizados pela Inteligência Artificial deverão ser definidos so
 * JSON
 * HTTP
 
-### Inteligência Artificial
+## Inteligência Artificial
 
+* Python
+* Flask
 * Machine Learning
+* `joblib`
 * Modelo de classificação
-* Classificação em pelo menos três categorias
 
-### Servidor
+## Desenvolvimento de Aplicativos
 
 * Node.js
 * Express
 * API REST
-* HTTP
-* JSON
-* Sistema de arquivos
-
-### Interface
-
 * HTML
 * CSS
 * JavaScript
-* API REST
+* JSON
 
-## Estrutura do projeto
+---
 
-A organização prevista atualmente é:
+# Estrutura do projeto
+
+A organização geral do projeto é:
 
 ```text
-projeto/
+CRMS/
 ├── firmware/
 │   └── stm32/
 │       └── leitorPurezaAr/
@@ -614,94 +810,417 @@ projeto/
 │
 ├── ia/
 │   └── modelo/
+│       ├── modelo.pkl
+│       └── ...
 │
 ├── servidor/
 │   ├── server.js
 │   ├── package.json
+│   ├── public/
+│   │   └── index.html
 │   └── data/
-│       └── dados.json
+│       ├── dados.json
+│       └── barf.json
 │
-└── frontend/
+└── README.md
 ```
 
-## Estado do desenvolvimento
+---
+
+# Fluxo completo
+
+O funcionamento completo do CRMS ocorre da seguinte maneira:
+
+```text
+┌───────────────────────────────┐
+│       SENSOR SIMULADO         │
+│       Potenciômetro           │
+└───────────────┬───────────────┘
+                │
+                ▼
+┌───────────────────────────────┐
+│          STM32F103C8          │
+│                               │
+│ ADC → Conversão → Filtro      │
+└───────────────┬───────────────┘
+                │
+                │ USB CDC
+                ▼
+┌───────────────────────────────┐
+│          APLICAÇÃO C#         │
+│                               │
+│ COM → Validação → JSON        │
+└───────────────┬───────────────┘
+                │
+                │ HTTP
+                ▼
+┌───────────────────────────────┐
+│          API NODE.JS          │
+│                               │
+│ Recepção → Armazenamento      │
+└───────────────┬───────────────┘
+                │
+                │ HTTP
+                ▼
+┌───────────────────────────────┐
+│          MODELO DE IA         │
+│                               │
+│ Predição → Classificação      │
+└───────────────┬───────────────┘
+                │
+                ▼
+┌───────────────────────────────┐
+│       RESULTADO FINAL         │
+│                               │
+│ Aprovado / Atenção /          │
+│ Reprovado                     │
+└───────────────┬───────────────┘
+                │
+                ▼
+┌───────────────────────────────┐
+│          INTERFACE WEB        │
+│                               │
+│ Leitura + Estado + Histórico  │
+└───────────────────────────────┘
+```
+
+---
+
+# Requisitos obrigatórios
+
+O projeto atende ao escopo definido para a atividade integrada.
+
+## Aquisição
+
+* [x] Leitura de sensor analógico simulado.
+* [x] Envio periódico das medições via USB CDC.
+* [x] Protocolo de comunicação definido.
+* [x] Pré-processamento opcional através de GPIO.
+* [x] Filtragem através de média móvel.
+
+## Comunicação
+
+* [x] Comunicação com a Porta COM.
+* [x] Leitura contínua das medições.
+* [x] Validação dos dados recebidos.
+* [x] Conversão para JSON.
+* [x] Envio das medições para a API.
+
+## API
+
+* [x] Endpoint para recebimento das medições.
+* [x] Armazenamento das leituras.
+* [x] Comunicação com o módulo de IA.
+* [x] Retorno da classificação ao cliente.
+* [x] Endpoint para disponibilização dos dados.
+
+## Inteligência Artificial
+
+* [x] Modelo de classificação treinado.
+* [x] Classificação automática de novas leituras.
+* [x] Três categorias de classificação.
+* [x] Integração com a API REST.
+
+## Interface Web
+
+* [x] Exibição da leitura atual.
+* [x] Exibição da classificação.
+* [x] Histórico das medições.
+* [x] Horário da última atualização.
+* [x] Indicação visual do estado do sistema.
+
+---
+
+# Desafios extras
+
+Além das funcionalidades obrigatórias, o projeto pode contemplar funcionalidades adicionais previstas na atividade:
+
+* [ ] Gráficos da evolução das medições.
+* [ ] Estatísticas de média, máximo e mínimo.
+* [ ] Detecção de tendência de crescimento ou diminuição.
+* [ ] Alertas visuais para estados críticos.
+
+---
+
+# Como executar
+
+O sistema é composto por três aplicações que precisam estar disponíveis durante a execução:
+
+```text
+STM32
+  ↓
+Aplicação C#
+  ↓
+Servidor Node.js
+  ↓
+Servidor Flask / IA
+```
+
+## 1. STM32
+
+Grave o firmware no STM32F103C8 e conecte o dispositivo ao computador através de USB.
+
+O dispositivo deverá disponibilizar uma Porta COM.
+
+O firmware realiza automaticamente a aquisição e transmissão das leituras.
+
+## 2. Aplicação C#
+
+Configure no código a Porta COM utilizada pelo STM32:
+
+```csharp
+porta.PortName = "COM5";
+```
+
+Execute a aplicação.
+
+Ao estabelecer a comunicação, será exibida uma mensagem semelhante a:
+
+```text
+Conectado em COM5
+```
+
+A aplicação permanecerá aguardando novas leituras.
+
+## 3. Servidor Node.js
+
+Instale as dependências do servidor:
+
+```bash
+npm install
+```
+
+Execute:
+
+```bash
+node server.js
+```
+
+O servidor será disponibilizado por padrão em:
+
+```text
+http://localhost:3001
+```
+
+## 4. Servidor de IA
+
+Instale as dependências Python necessárias e certifique-se de que o arquivo:
+
+```text
+modelo.pkl
+```
+
+esteja presente no diretório do modelo.
+
+Execute o servidor Flask.
+
+A API de IA será disponibilizada em:
+
+```text
+http://127.0.0.1:5000
+```
+
+## 5. Interface Web
+
+Com o servidor Node.js em execução, acesse:
+
+```text
+http://localhost:3001/leituras
+```
+
+A interface deverá apresentar as medições recebidas e os resultados produzidos pelo modelo.
+
+---
+
+# Tratamento de erros
+
+O sistema possui mecanismos básicos de validação e tratamento de erros em diferentes camadas.
+
+Na aplicação C#, são verificadas:
+
+* quantidade de campos recebidos;
+* validade do valor numérico;
+* validade do estado do filtro;
+* erros de comunicação HTTP.
+
+Na API Node.js, são tratados:
+
+* ausência de arquivos de dados;
+* erros de comunicação com a IA;
+* respostas inválidas do módulo de Machine Learning.
+
+Na API Flask, são verificadas:
+
+* ausência de JSON;
+* ausência do campo `valor`;
+* erros durante a execução do modelo.
+
+Quando a IA não está disponível, a API informa que não foi possível realizar a classificação, sem impedir que a leitura recebida seja identificada no retorno.
+
+---
+
+# Decisões de implementação
+
+## Potenciômetro como sensor
+
+Um potenciômetro foi utilizado como representação de um sensor analógico de concentração de partículas.
+
+Isso permite controlar manualmente a variável monitorada e reproduzir diferentes condições de ambiente durante os testes.
+
+## Média móvel
+
+A média móvel foi escolhida como técnica de filtragem por ser simples, adequada para reduzir pequenas oscilações e compatível com o processamento realizado em um microcontrolador.
+
+## USB CDC
+
+A USB CDC permite que o STM32 seja reconhecido pelo computador como uma interface serial, simplificando a comunicação com a aplicação C#.
+
+## JSON
+
+JSON foi utilizado na comunicação entre a aplicação C# e o servidor por ser um formato estruturado e amplamente utilizado em APIs Web.
+
+## Arquitetura distribuída
+
+A separação entre firmware, aplicação C#, servidor e IA permite que cada parte tenha uma responsabilidade específica:
+
+```text
+STM32
+Aquisição
+
+C#
+Comunicação
+
+Node.js
+Integração e API
+
+Python
+Classificação
+
+Web
+Visualização
+```
+
+Essa divisão também representa a integração entre as disciplinas do projeto.
+
+---
+
+# Relação com as disciplinas
+
+O CRMS integra diretamente os conteúdos das quatro disciplinas:
+
+```text
+┌─────────────────────────────┐
+│ Sistemas Embarcados         │
+│                             │
+│ ADC + GPIO + USB CDC        │
+└──────────────┬──────────────┘
+               │
+               ▼
+┌─────────────────────────────┐
+│ Linguagens de Programação   │
+│                             │
+│ C# + Serial + HTTP + JSON   │
+└──────────────┬──────────────┘
+               │
+               ▼
+┌─────────────────────────────┐
+│ Desenvolvimento de         │
+│ Aplicativos                 │
+│                             │
+│ Node.js + API + Web         │
+└──────────────┬──────────────┘
+               │
+               ▼
+┌─────────────────────────────┐
+│ Inteligência Artificial     │
+│                             │
+│ Dataset + ML + Classificação│
+└─────────────────────────────┘
+```
+
+O resultado é um único sistema no qual os conhecimentos das quatro áreas são utilizados em conjunto.
+
+---
+
+# Estado do desenvolvimento
 
 ### Concluído
 
 * [x] Configuração do STM32.
-* [x] Leitura do potenciômetro através do ADC1.
-* [x] Utilização do PA1 como ADC1_IN1.
+* [x] Leitura do potenciômetro através do ADC.
 * [x] Conversão do ADC para a escala de concentração.
-* [x] Média móvel com janela de 8 amostras.
+* [x] Média móvel.
 * [x] Ativação/desativação do filtro através de GPIO.
 * [x] Comunicação USB CDC.
-* [x] Definição do protocolo serial.
-* [x] Leitura da Porta COM pela aplicação C#.
+* [x] Protocolo serial.
+* [x] Comunicação com a Porta COM.
 * [x] Validação dos dados recebidos.
-* [x] Conversão para objeto `Leitura`.
+* [x] Conversão para objeto C#.
 * [x] Geração de timestamp.
 * [x] Serialização para JSON.
 * [x] Envio HTTP para a API.
-* [x] API REST básica.
-* [x] Recebimento das leituras pela API.
-* [x] Persistência das leituras em `data/dados.json`.
+* [x] API REST.
+* [x] Persistência das leituras.
+* [x] Modelo de Machine Learning.
+* [x] Integração entre Node.js e Python.
+* [x] Classificação automática.
+* [x] Interface Web.
+* [x] Exibição do histórico.
+* [x] Indicação visual da condição do ambiente.
 
-### Em desenvolvimento
+### Extras
 
-* [ ] Definição final dos intervalos de classificação.
-* [ ] Criação do dataset.
-* [ ] Treinamento do modelo de Machine Learning.
-* [ ] Integração do modelo com a API.
-* [ ] Retorno da classificação para o cliente.
-* [ ] Desenvolvimento da interface Web.
-* [ ] Atualização automática da interface.
-* [ ] Exibição do histórico das medições.
-* [ ] Indicação visual da condição do ambiente.
+* [X] Gráficos de evolução.
+* [X] Estatísticas de média, máximo e mínimo.
+* [X] Detecção de tendência.
+* [X] Alertas para estados críticos.
 
-## Objetivo final
+---
 
-Ao final do projeto, o sistema deverá permitir o seguinte fluxo:
+# Resultado esperado
+
+O CRMS transforma uma leitura analógica simulada em uma decisão apresentada ao usuário:
 
 ```text
-        AMBIENTE SIMULADO
-               │
-               ▼
-     Potenciômetro / Trimpot
-               │
-               ▼
-          STM32 + ADC
-               │
-               ▼
-    Concentração de partículas
-               │
-          USB CDC / COM
-               │
-               ▼
-         Aplicação C#
-               │
-             JSON
-               │
-               ▼
-          API REST
-               │
-               ▼
-       Modelo de Machine
-          Learning
-               │
-               ▼
-       ┌───────┴───────┐
-       │               │
-      Bom            Médio/Ruim
-       │               │
-       └───────┬───────┘
-               ▼
-          dados.json
-               │
-               ▼
-         Interface Web
-               │
-               ▼
-      Estado da Clean Room
+Trimpot
+   ↓
+Leitura analógica
+   ↓
+ADC
+   ↓
+Concentração simulada
+   ↓
+Filtragem opcional
+   ↓
+USB CDC
+   ↓
+Aplicação C#
+   ↓
+JSON
+   ↓
+API REST
+   ↓
+Machine Learning
+   ↓
+┌──────────────────────────┐
+│ Aprovado                 │
+│ Atenção                  │
+│ Reprovado                │
+└────────────┬─────────────┘
+             ↓
+       Interface Web
+             ↓
+     Estado da Clean Room
 ```
 
-O resultado final será uma simulação integrada de monitoramento de partículas em uma sala limpa, demonstrando a comunicação entre hardware, software, API, armazenamento, Inteligência Artificial e interface Web.
+O resultado final é uma simulação integrada de um sistema de monitoramento de uma *clean room*, demonstrando a integração entre hardware, comunicação, processamento, Inteligência Artificial, armazenamento e interface Web.
+
+---
+
+# CRMS
+
+**Clean Room Monitoring System**
+
+Sistema acadêmico integrado para aquisição, classificação e acompanhamento de uma variável ambiental simulada em uma sala limpa.
+
+```
