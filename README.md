@@ -5,7 +5,7 @@ Sistema integrado de monitoramento e classificação da condição do ambiente d
 O CRMS simula um sistema utilizado para acompanhar a concentração de partículas em uma sala limpa localizada na entrada de uma linha de produção de CPUs. A solução integra um sistema embarcado, comunicação serial, aplicação intermediária, API REST, Machine Learning e interface Web.
 
 > Projeto acadêmico de integração entre Sistemas Embarcados, Linguagens de Programação, Inteligência Artificial e Desenvolvimento de Aplicativos.
-> **Vídeo:** [INSERIR LINK]
+**Vídeo:** [INSERIR LINK]
 
 ---
 
