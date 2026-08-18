@@ -30,9 +30,8 @@ O CRMS simula um sistema utilizado para acompanhar a concentração de partícul
 
 ### Integrantes
 
-- 
-- 
-- 
+- Frederico Teodoro Arantes
+- Livia Maria dos Reis Chagas
 
 ### Avaliação
 
