@@ -3,45 +3,191 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Leituras</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Monitoramento de Leituras</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: #f4f4f4;
+            color: #222;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            background: #333;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #555;
+        }
+
+        #status {
+            margin: 15px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #222;
+            color: white;
+        }
+
+        .aprovado {
+            color: green;
+            font-weight: bold;
+        }
+
+        .atencao {
+            color: orange;
+            font-weight: bold;
+        }
+
+        .reprovado {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body>
 
-    <h1>Leituras</h1>
+    <h1>Monitoramento de Leituras</h1>
 
-    <input type="text" id="valor" placeholder="Digite uma leitura">
-    <button onclick="enviarLeitura()">Enviar</button>
+    <button onclick="carregarLeituras()">
+        Atualizar
+    </button>
 
-    <h2>Dados:</h2>
-    <pre id="dados"></pre>
+    <div id="status">
+        Carregando...
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Valor</th>
+                <th>Filtro</th>
+                <th>Data/Hora</th>
+                <th>Classe IA</th>
+                <th>Resultado</th>
+            </tr>
+        </thead>
+
+        <tbody id="tabela">
+        </tbody>
+    </table>
 
     <script>
-        async function enviarLeitura() {
-            const valor = document.getElementById('valor').value;
-
-            await fetch('http://localhost:3001/leituras', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    valor: valor
-                })
-            });
-
-            carregarLeituras();
-        }
 
         async function carregarLeituras() {
-            const resposta = await fetch('http://localhost:3001/leituras');
-            const dados = await resposta.json();
 
-            document.getElementById('dados').textContent =
-                JSON.stringify(dados, null, 2);
+            const status = document.getElementById("status");
+            const tabela = document.getElementById("tabela");
+
+            try {
+
+                status.textContent = "Carregando leituras...";
+
+                const resposta = await fetch("/api/leituras");
+
+                if (!resposta.ok) {
+                    throw new Error("Erro ao buscar leituras");
+                }
+
+                const dados = await resposta.json();
+
+                tabela.innerHTML = "";
+
+                if (dados.length === 0) {
+
+                    status.textContent = "Nenhuma leitura registrada.";
+
+                    return;
+                }
+
+                dados.forEach(leitura => {
+
+                    const linha = document.createElement("tr");
+
+                    const resultado =
+                        leitura.ia?.resultado ?? "Sem previsão";
+
+                    const classe =
+                        leitura.ia?.classe ?? "-";
+
+                    let classeCSS = "";
+
+                    if (resultado === "Aprovado") {
+                        classeCSS = "aprovado";
+                    }
+
+                    if (resultado === "Atenção") {
+                        classeCSS = "atencao";
+                    }
+
+                    if (resultado === "Reprovado") {
+                        classeCSS = "reprovado";
+                    }
+
+                    linha.innerHTML = `
+                        <td>${leitura.valor}</td>
+
+                        <td>
+                            ${leitura.filtro ? "Ativo" : "Inativo"}
+                        </td>
+
+                        <td>
+                            ${leitura.timestamp ?? "-"}
+                        </td>
+
+                        <td>
+                            ${classe}
+                        </td>
+
+                        <td class="${classeCSS}">
+                            ${resultado}
+                        </td>
+                    `;
+
+                    tabela.appendChild(linha);
+                });
+
+                status.textContent =
+                    `${dados.length} leitura(s) encontrada(s).`;
+
+            } catch (erro) {
+
+                console.error(erro);
+
+                status.textContent =
+                    "Erro ao carregar as leituras.";
+            }
         }
 
         carregarLeituras();
+
     </script>
 
 </body>

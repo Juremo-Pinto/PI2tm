@@ -17,7 +17,7 @@ print("Carregou :D")
 
 
 # Recebe uma previsão
-@app.post("/prever")
+@app.post("/preview")
 def prever():
 
     # Recebe o JSON
@@ -45,7 +45,7 @@ def prever():
     try:
 
         # Faz a previsão
-        predictions = modelo.predict([[value]])[0]
+        prediction = modelo.predict([[value]])[0]
 
         # Classes da IA
         classes = {
@@ -56,14 +56,14 @@ def prever():
 
         # Converte classe para texto
         result = classes.get(
-            int(predictions),
+            int(prediction),
             "Desconhecido"
         )
 
         # Retorna o resultado
         return jsonify({
             "valor": value,
-            "classe": int(predictions),
+            "classe": int(prediction),
             "resultado": result
         })
 
