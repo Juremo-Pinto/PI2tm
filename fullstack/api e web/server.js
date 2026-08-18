@@ -7,11 +7,11 @@ const app = express();
 app.use(express.json());
 
 const DADOS_PATH = path.join(__dirname, 'data', 'dados.json');
-const BARF_PATH = path.join(__dirname, 'braf', 'barf.json')
+const BARF_PATH = path.join(__dirname, 'barf', 'barf.json')
 
 app.get('/leituras', (req, res) => {
     res.sendFile(
-        path.join(__dirname, 'public', 'leituras.html')
+        path.join(__dirname, 'public', 'index.html')
     );
 });
 
