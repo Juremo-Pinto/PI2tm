@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json());
 
 const DADOS_PATH = path.join(__dirname, 'data', 'dados.json');
-const BARF_PATH = path.join(__dirname, 'barf', 'barf.json')
+const BARF_PATH = path.join(__dirname, 'data', 'barf.json')
 
 app.get('/leituras', (req, res) => {
     res.sendFile(
